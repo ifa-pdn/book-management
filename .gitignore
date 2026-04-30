@@ -27,6 +27,7 @@
 dev.db
 public/uploads/*
 !public/uploads/.gitkeep
+docs/
 
 # debug
 npm-debug.log*
