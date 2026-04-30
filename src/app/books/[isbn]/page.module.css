@@ -1,0 +1,219 @@
+.bookPage {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  min-width: 0;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: fit-content;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+}
+
+.backLink:hover {
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+}
+
+.authButton {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.65rem 0.85rem;
+  text-decoration: none;
+}
+
+.authButton:hover {
+  background: var(--accent-blue-soft);
+}
+
+.bookPanel {
+  padding: 1.5rem;
+}
+
+.bookHero {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.coverFrame {
+  position: relative;
+  width: 180px;
+  height: 250px;
+  background: var(--accent-blue-soft);
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.noCover {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.bookInfo {
+  flex: 1;
+  min-width: 260px;
+}
+
+.bookTitle {
+  font-size: 2rem;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.bookAuthor {
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  overflow-wrap: anywhere;
+}
+
+.isbn {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.badgeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.badgeReset {
+  max-width: 100%;
+  margin-right: 0;
+  overflow-wrap: anywhere;
+}
+
+.skuSection {
+  background: var(--accent-blue-soft);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.skuLabel {
+  color: var(--text-main);
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+}
+
+.skuList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.detailGrid {
+  background: var(--accent-blue-soft);
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  min-width: 0;
+}
+
+.detailGrid b {
+  color: var(--text-main);
+}
+
+.borrowNotice {
+  background: var(--dashboard-accent-soft);
+  border: 1px solid rgba(255, 183, 3, 0.38);
+  border-radius: 10px;
+  color: var(--accent-yellow-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.notFoundPanel {
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .bookPanel {
+    padding: 1rem;
+  }
+
+  .bookHero {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .coverFrame {
+    width: 140px;
+    height: 196px;
+  }
+
+  .bookInfo {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .bookTitle {
+    font-size: 1.5rem;
+    line-height: 1.2;
+  }
+
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+}

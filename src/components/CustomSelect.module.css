@@ -1,0 +1,95 @@
+.selectRoot {
+  --custom-select-gap: 0.75rem;
+  --custom-select-min-height: 42px;
+  --custom-select-padding: 0.75rem 0.9rem;
+
+  position: relative;
+  width: 100%;
+}
+
+.selectButton {
+  width: 100%;
+  min-height: var(--custom-select-min-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--custom-select-gap);
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-main);
+  cursor: pointer;
+  font: inherit;
+  line-height: 1.2;
+  padding: var(--custom-select-padding);
+  text-align: left;
+}
+
+.selectButton:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+}
+
+.selectButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.selectText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.selectMenu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 80;
+  display: grid;
+  gap: 0.25rem;
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 42px rgba(2, 48, 71, 0.14);
+  padding: 0.35rem;
+}
+
+.selectOption {
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.58rem 0.7rem;
+  text-align: left;
+}
+
+.selectOption:hover,
+.selectOptionActive {
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+}
+
+.selectOptionSelected {
+  background: var(--primary);
+  color: #fff;
+}
+
+.selectOptionSelected:hover {
+  background: var(--primary);
+  color: #fff;
+}

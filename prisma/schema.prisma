@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Book {
+  isbn         String     @id
+  title        String
+  author       String?
+  publisher    String?
+  edition      String?
+  printing     String?
+  publishDate  String?
+  coverUrl     String?
+  size         String?
+  pages        Int?
+  
+  // Category Info for SKU Generation
+  category     String?
+  categoryCode String?    // e.g. "De"
+  categorySeq  Int?       // e.g. 30
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  copies       BookCopy[]
+}
+
+model BookCopy {
+  id           String   @id @default(uuid())
+  isbn         String
+  book         Book     @relation(fields: [isbn], references: [isbn])
+  
+  uniqueCode   String   @unique // e.g. "AUC-De30-1"
+  copyNumber   Int      // e.g. 1
+  
+  location     String?
+  condition    String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  loans        Loan[]
+}
+
+model Loan {
+  id             String   @id @default(uuid())
+  bookCopyId     String
+  bookCopy       BookCopy @relation(fields: [bookCopyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  borrowerName   String
+  borrowerClass  String
+  borrowedAt     DateTime
+  dueAt          DateTime
+  returnedAt     DateTime?
+  status         String   @default("active")
+  borrowNotes    String?
+  returnNotes    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([bookCopyId])
+  @@index([status])
+  @@index([dueAt])
+}

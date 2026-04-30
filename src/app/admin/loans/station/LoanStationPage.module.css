@@ -1,0 +1,503 @@
+.stationPage {
+  min-height: 100vh;
+  padding: 1.5rem;
+  background: var(--page-bg);
+}
+
+.stationControlArea {
+  position: fixed;
+  left: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 20;
+}
+
+.stationControlToggle {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  box-shadow: 0 12px 28px rgba(29, 44, 89, 0.16);
+}
+
+.stationActions {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.65rem);
+  width: min(420px, calc(100vw - 3rem));
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.75rem;
+}
+
+.modeSwitch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 1rem auto;
+  max-width: 1120px;
+  width: 100%;
+}
+
+.modeButton {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  padding: 0.75rem 1rem;
+}
+
+.modeButtonActive {
+  background: var(--primary);
+  color: #fff;
+}
+
+.headerButton,
+.noticeButton {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.65rem 0.9rem;
+  text-decoration: none;
+}
+
+.headerButton:hover,
+.noticeButton:hover {
+  background: var(--accent-blue-soft);
+}
+
+.lockButton {
+  color: var(--accent-red);
+}
+
+.stationGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: 1120px;
+}
+
+.scanPanel,
+.borrowerPanel {
+  padding: 1.25rem;
+}
+
+.panelHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom: 1.25rem;
+}
+
+.panelHeading h2 {
+  color: var(--text-main);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.panelHeading p {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0.2rem 0 0;
+}
+
+.panelIcon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+  flex-shrink: 0;
+  font-size: 1.25rem;
+}
+
+.scanInput,
+.borrowerInput {
+  width: 100%;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-main);
+  font: inherit;
+  outline: none;
+}
+
+.scanInput {
+  font-size: clamp(1.65rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  padding: 0.9rem 1rem;
+}
+
+.scanInput::placeholder {
+  color: var(--text-muted);
+  opacity: 0.34;
+}
+
+.scanQrButton {
+  width: 100%;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.scanQrButton:hover {
+  background: var(--accent-blue-soft);
+}
+
+.qrScannerPanel {
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  margin-top: 1rem;
+  padding: 0.9rem;
+}
+
+.qrScannerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.qrScannerHeader h3 {
+  color: var(--text-main);
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.qrScannerHeader p {
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  margin: 0.18rem 0 0;
+}
+
+.qrScannerCloseButton {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.32rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.45rem 0.65rem;
+}
+
+.qrScannerFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #000;
+  aspect-ratio: 4 / 3;
+}
+
+.qrScannerVideo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 100%;
+  object-fit: cover;
+  opacity: 1;
+}
+
+.qrScannerGuide {
+  position: absolute;
+  inset: 18%;
+  border: 2px solid rgba(255, 255, 255, 0.86);
+  border-radius: 10px;
+  box-shadow: 0 0 0 999px rgba(2, 48, 71, 0.28);
+  pointer-events: none;
+}
+
+.qrScannerStatus,
+.qrScannerError {
+  font-size: 0.88rem;
+  font-weight: 800;
+  margin: 0.75rem 0 0;
+}
+
+.qrScannerStatus {
+  color: var(--primary);
+}
+
+.qrScannerError {
+  color: var(--accent-red);
+}
+
+.borrowerInput {
+  font-size: 1.2rem;
+  font-weight: 700;
+  min-height: 52px;
+  padding: 0.8rem 0.9rem;
+}
+
+.selectWrap {
+  position: relative;
+}
+
+.borrowerSelect {
+  appearance: none;
+  padding-right: 0.75rem;
+}
+
+.selectArrow {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.scanInput:focus,
+.borrowerInput:focus {
+  border-color: rgba(33, 158, 188, 0.52);
+  box-shadow: 0 0 0 3px rgba(142, 202, 230, 0.42);
+}
+
+.copyResult {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid rgba(47, 143, 78, 0.22);
+  margin-top: 1rem;
+  padding: 1rem;
+}
+
+.copyResultUnavailable {
+  border-color: rgba(196, 61, 31, 0.24);
+}
+
+.resultKicker {
+  color: var(--accent-green);
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem;
+  text-transform: uppercase;
+}
+
+.copyResultUnavailable .resultKicker {
+  color: var(--accent-red);
+}
+
+.copyResult h3 {
+  color: var(--text-main);
+  font-size: 1.15rem;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.copyResult p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0.35rem 0 0;
+}
+
+.statusBadge {
+  margin-right: 0;
+  white-space: nowrap;
+}
+
+.fieldFeedback {
+  color: var(--accent-red);
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0.75rem 0 0;
+}
+
+.formStack {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.loanSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.loanSummary div,
+.emptyReturnState {
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  color: var(--text-main);
+  padding: 0.85rem;
+}
+
+.loanSummary span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.loanSummary strong {
+  display: block;
+  font-size: 0.94rem;
+  line-height: 1.25;
+}
+
+.emptyReturnState {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-bottom: 1rem;
+}
+
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.submitButton {
+  width: 100%;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  min-height: 54px;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.errorNotice,
+.successNotice {
+  border-radius: 8px;
+  font-weight: 700;
+  margin: 0 auto 1rem;
+  max-width: 1120px;
+  padding: 0.85rem 1rem;
+}
+
+.errorNotice {
+  color: var(--accent-red);
+  background: var(--accent-red-soft);
+  border: 1px solid rgba(196, 61, 31, 0.24);
+}
+
+.successNotice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--accent-green);
+  background: var(--accent-green-soft);
+  border: 1px solid rgba(47, 143, 78, 0.24);
+}
+
+.successNotice strong,
+.successNotice span {
+  display: block;
+}
+
+.successNotice span {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 900px) {
+  .stationGrid,
+  .modeSwitch {
+    max-width: 720px;
+  }
+
+  .stationGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .stationPage {
+    padding: 1rem;
+  }
+
+  .stationControlArea {
+    left: 1rem;
+    bottom: 1rem;
+  }
+
+  .stationActions {
+    width: min(360px, calc(100vw - 2rem));
+  }
+
+  .dateGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .modeSwitch,
+  .loanSummary {
+    grid-template-columns: 1fr;
+  }
+
+  .copyResult,
+  .successNotice,
+  .qrScannerHeader {
+    flex-direction: column;
+  }
+
+  .qrScannerCloseButton {
+    width: 100%;
+  }
+}

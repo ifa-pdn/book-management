@@ -1,0 +1,150 @@
+.dateRoot {
+  position: relative;
+  width: 100%;
+}
+
+.dateButton {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-main);
+  cursor: pointer;
+  font: inherit;
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+}
+
+.dateButton:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+}
+
+.dateButtonText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.datePlaceholder {
+  color: var(--text-muted);
+  opacity: 0.72;
+}
+
+.dateIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.calendarPanel {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.35rem);
+  z-index: 90;
+  width: min(320px, calc(100vw - 2rem));
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 18px 42px rgba(2, 48, 71, 0.14);
+  padding: 0.8rem;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.calendarTitle {
+  color: var(--text-main);
+  font-size: 0.96rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.calendarNav {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.calendarGrid,
+.weekdayGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+
+.weekday {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0;
+  text-align: center;
+}
+
+.dayButton,
+.emptyDay {
+  min-height: 34px;
+}
+
+.dayButton {
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.dayButton:hover {
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+}
+
+.selectedDay {
+  background: var(--primary);
+  color: #fff;
+}
+
+.selectedDay:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.calendarFooter {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.footerButton {
+  flex: 1;
+  min-height: 36px;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+}

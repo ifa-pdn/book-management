@@ -1,0 +1,372 @@
+.copyPage {
+  width: calc(100% - 5rem);
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 0 2.5rem;
+}
+
+.copyTopBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.copyTopActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.topActionButton {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.65rem 0.85rem;
+  text-decoration: none;
+}
+
+.topActionButton:hover {
+  background: var(--accent-blue-soft);
+}
+
+.notFoundPage {
+  padding: 2rem 1rem;
+}
+
+.copyPanel {
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.copyHeader {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.copyCover {
+  position: relative;
+  width: 100px;
+  height: 140px;
+  background: var(--accent-blue-soft);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.coverImage {
+  object-fit: cover;
+}
+
+.noCover {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.copyTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.copyAuthor {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  font-weight: 500;
+}
+
+.copyIsbn {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.skuWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.skuBadge {
+  font-size: 0.85rem;
+  margin-right: 0;
+}
+
+.copyDetailGrid {
+  background: var(--accent-blue-soft);
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  border: 1px solid var(--panel-border);
+}
+
+.copyDetailGrid b {
+  color: var(--text-main);
+}
+
+.borrowNotice {
+  background: var(--dashboard-accent-soft);
+  border: 1px solid rgba(255, 183, 3, 0.38);
+  border-radius: 10px;
+  color: var(--accent-yellow-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.borrowNotice + .statusBox {
+  margin-top: 1.5rem;
+}
+
+.statusBox {
+  background: #fff;
+  padding: 1.2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 12px 28px rgba(2, 48, 71, 0.055);
+}
+
+.statusRow,
+.statusRowSeparated {
+  display: flex;
+  justify-content: space-between;
+}
+
+.statusRowSeparated {
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px dashed rgba(142, 202, 230, 0.5);
+}
+
+.statusLabel {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.statusBadge {
+  font-size: 0.9rem;
+}
+
+.managerPanel {
+  padding: 1.5rem;
+}
+
+.managerTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.createLoanLink {
+  width: 100%;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  min-height: 48px;
+  text-decoration: none;
+}
+
+.createLoanLink:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.returnPanel {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.returnHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.returnHeader h3 {
+  color: var(--text-main);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.returnHeader p {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  margin: 0.25rem 0 0;
+}
+
+.stationReturnLink {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  color: var(--primary);
+  flex-shrink: 0;
+  font-size: 0.84rem;
+  font-weight: 800;
+  padding: 0.55rem 0.75rem;
+  text-decoration: none;
+}
+
+.returnSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.returnSummary div {
+  border-radius: 8px;
+  background: var(--accent-blue-soft);
+  padding: 0.75rem;
+}
+
+.returnSummary span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.returnSummary strong {
+  color: var(--text-main);
+  display: block;
+  font-size: 0.88rem;
+  line-height: 1.25;
+}
+
+.returnError,
+.returnSuccess,
+.unavailableNotice {
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.returnError {
+  background: var(--accent-red-soft);
+  color: var(--accent-red);
+}
+
+.returnSuccess {
+  background: var(--accent-green-soft);
+  color: var(--accent-green);
+}
+
+.unavailableNotice {
+  background: var(--dashboard-accent-soft);
+  color: var(--accent-yellow-text);
+  margin-bottom: 1rem;
+}
+
+.guestMessage {
+  text-align: center;
+  margin-top: 2rem;
+  padding: 2rem;
+  background: var(--accent-blue-soft);
+  border-radius: 12px;
+  border: 1px dashed rgba(33, 158, 188, 0.35);
+}
+
+.guestTitle {
+  font-size: 1.1rem;
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.guestBody {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.actionForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.strongLabel {
+  font-weight: 600;
+}
+
+.primaryAction {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  font-weight: 700;
+}
+
+.secondaryAction {
+  width: 100%;
+  padding: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(33, 158, 188, 0.28);
+  color: var(--text-main);
+}
+
+.notFound {
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .copyPage {
+    width: calc(100% - 2rem);
+    padding: 1.25rem 0 2rem;
+  }
+
+  .returnHeader {
+    flex-direction: column;
+  }
+
+  .stationReturnLink {
+    width: 100%;
+  }
+
+  .returnSummary {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,37 @@
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.selectRoot {
+  --custom-select-gap: 0.45rem;
+  --custom-select-min-height: 36px;
+  --custom-select-padding: 0.55rem 0.7rem;
+
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.select {
+  min-width: 82px;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 10px;
+  background: white;
+  color: var(--text-main);
+  cursor: pointer;
+  font: inherit;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+}

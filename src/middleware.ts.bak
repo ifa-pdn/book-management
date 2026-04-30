@@ -1,0 +1,31 @@
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+export function middleware(request: NextRequest) {
+  // Ambil token / kuki login dari browser pengunjung
+  const token = request.cookies.get('auth_token')?.value;
+  const url = request.nextUrl.pathname;
+
+  // 1. Periksa apakah rute ini bersifat rahasia/private
+  const isProtectedRoute = url === '/' || url.startsWith('/add');
+
+  if (isProtectedRoute) {
+    if (!token || token !== 'admin_token_secure_auc') {
+      // Usir kembali ke halaman login
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
+  // 2. Jika pengelola SUDAH login tapi secara tidak sengaja membuka halaman /login, 
+  // lemparkan langsung masuk ke Dashboard agar tidak membingungkan
+  if (url === '/login' && token === 'admin_token_secure_auc') {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  return NextResponse.next();
+}
+
+// Konfigurasi agar satpam ini hanya bekerja pada rute kunci saja (Hemat performa)
+export const config = {
+  matcher: ['/', '/add/:path*', '/login'],
+};

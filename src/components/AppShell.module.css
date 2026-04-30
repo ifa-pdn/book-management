@@ -1,0 +1,25 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.mainContent {
+  flex: 1;
+  padding: 2rem 2.5rem 2.5rem;
+}
+
+.mainContentFlush {
+  padding: 0;
+}
+
+@media (max-width: 767px) {
+  .mainContent {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .mainContentFlush {
+    padding: 0;
+  }
+}

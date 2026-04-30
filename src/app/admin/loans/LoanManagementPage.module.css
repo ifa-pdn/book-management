@@ -1,0 +1,367 @@
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.pageSubtitle {
+  margin-bottom: 0;
+}
+
+.headerBadge {
+  margin-right: 0;
+}
+
+.headerBadges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.loanPanel {
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+}
+
+.panelToolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.refreshButton,
+.toolbarLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.refreshButton:hover,
+.toolbarLink:hover {
+  border-color: rgba(33, 158, 188, 0.42);
+  background: var(--accent-blue-soft);
+}
+
+.errorNotice,
+.successNotice {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.errorNotice {
+  color: var(--accent-red);
+  background: var(--accent-red-soft);
+  border: 1px solid rgba(196, 61, 31, 0.24);
+}
+
+.successNotice {
+  color: var(--accent-green);
+  background: var(--accent-green-soft);
+  border: 1px solid rgba(47, 143, 78, 0.24);
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.formCard,
+.activeLoansCard {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fff;
+}
+
+.cardTitle {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+}
+
+.formCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.formToggleButton {
+  display: none;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.55rem;
+  white-space: nowrap;
+}
+
+.formToggleButton:hover {
+  border-color: rgba(33, 158, 188, 0.42);
+  background: var(--accent-blue-soft);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.fieldFeedback {
+  color: var(--accent-red);
+  font-size: 0.82rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.submitButton {
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.submitButton:disabled,
+.returnButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loanList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.loanCard {
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 0.9rem;
+  background: var(--accent-blue-soft);
+}
+
+.loanCardOverdue {
+  background: var(--accent-red-soft);
+}
+
+.loanCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.loanBookInfo {
+  min-width: 0;
+}
+
+.loanBookTitle {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.loanMeta,
+.loanDateGrid {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+.loanMeta {
+  font-size: 0.8rem;
+}
+
+.statusBadge {
+  margin-right: 0;
+  height: fit-content;
+}
+
+.cardActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.loanDateGrid,
+.returnGrid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.loanDateGrid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-top: 0.75rem;
+}
+
+.noteBox {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.notesGrid .noteBox {
+  margin-top: 0;
+}
+
+.noteHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.noteLabel {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+.noteBox p {
+  margin: 0;
+}
+
+.noteIconButton {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.noteIconButton:hover {
+  background: var(--accent-blue-soft);
+}
+
+.noteTextarea {
+  min-height: 86px;
+  resize: vertical;
+  font: inherit;
+}
+
+.noteActions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.noteActionButton {
+  gap: 0.5rem;
+}
+
+.secondaryButton {
+  background: #fff;
+  border: 1px solid var(--panel-border);
+  color: var(--text-main);
+}
+
+.returnGrid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  align-items: end;
+  margin-top: 0.9rem;
+}
+
+.returnButton {
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.emptyState {
+  color: var(--text-muted);
+  border: 1px dashed rgba(33, 158, 188, 0.35);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 1023px) {
+  .contentGrid {
+    grid-template-columns: auto;
+  }
+
+  .formCardHeader {
+    margin-bottom: 0;
+  }
+
+  .formCardHeader .cardTitle {
+    margin-bottom: 0;
+  }
+
+  .formToggleButton {
+    display: inline-flex;
+  }
+
+  .formBody {
+    display: none;
+    margin-top: 1rem;
+  }
+
+  .formBodyOpen {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .panelToolbar {
+    align-items: stretch;
+  }
+
+  .refreshButton,
+  .toolbarLink {
+    width: 100%;
+  }
+
+  .refreshButton,
+  .toolbarLink {
+    justify-content: flex-start;
+  }
+}
