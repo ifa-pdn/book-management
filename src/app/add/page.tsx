@@ -224,8 +224,10 @@ export default function AddBook() {
         const d = await res.json() as { error?: string };
         throw new Error(d.error);
       }
-      await dialog.alert(lang === 'id' ? `Berhasil menyimpan ${count} buku!` : `Successfully saved ${count} books!`);
-      router.push("/");
+      const successMessageKey =
+        count === 1 ? "bookSaveSuccessSingle" : "bookSaveSuccessPlural";
+      await dialog.alert(t(successMessageKey).replace("{count}", String(count)));
+      router.push("/admin");
     } catch(error) {
       await dialog.alert("Error: " + (error instanceof Error ? error.message : "Unknown error"));
     } finally {
