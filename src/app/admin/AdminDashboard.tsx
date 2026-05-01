@@ -11,6 +11,7 @@ import { useDialog } from "../../components/DialogProvider";
 import Icon from "../../components/Icon";
 import type { AdminCatalogBook } from "../../lib/bookCatalog";
 import type { AdminLoan } from "../../lib/adminLoans";
+import type { ReportPeriod, TopBorrowedBook } from "../../lib/loanReports";
 import styles from "./AdminDashboard.module.css";
 
 const CATEGORIES = [
@@ -23,6 +24,7 @@ const CATEGORIES = [
   "Office",
 ];
 const SIZES = ["A4", "A5", "B5", "B5 変形", "B6", "四六判", "文庫"];
+const REPORT_PERIOD_OPTIONS: ReportPeriod[] = ["30d", "month", "year", "all"];
 type TranslationMap = typeof dictionary.id;
 
 interface EditableBookCopy {
@@ -46,9 +48,11 @@ type PrintableLabelsProps = {
 export default function Dashboard({
   initialBooks,
   initialLoans,
+  initialTopBorrowedBooks,
 }: {
   initialBooks: Book[];
   initialLoans: AdminLoan[];
+  initialTopBorrowedBooks: TopBorrowedBook[];
 }) {
   const { t, lang } = useI18n();
   const dialog = useDialog();
@@ -79,10 +83,24 @@ export default function Dashboard({
   >([]);
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [expandedCopyBooks, setExpandedCopyBooks] = useState<string[]>([]);
+  const [rankingPeriod, setRankingPeriod] = useState<ReportPeriod>("30d");
+  const [topBorrowedByPeriod, setTopBorrowedByPeriod] = useState<
+    Partial<Record<ReportPeriod, TopBorrowedBook[]>>
+  >({
+    "30d": initialTopBorrowedBooks,
+  });
+  const [isRankingExpanded, setIsRankingExpanded] = useState(false);
+  const [isRankingLoading, setIsRankingLoading] = useState(false);
+  const [rankingError, setRankingError] = useState("");
   const selectAllRef = useRef<HTMLInputElement>(null);
   const overdueLoanCount = initialLoans.filter(
     (loan) => loan.status === "overdue",
   ).length;
+  const topBorrowedBooks = topBorrowedByPeriod[rankingPeriod] ?? [];
+  const visibleTopBorrowedBooks = isRankingExpanded
+    ? topBorrowedBooks
+    : topBorrowedBooks.slice(0, 3);
+  const hasHiddenRankingItems = topBorrowedBooks.length > 3;
 
   const getTrans = (prefix: string, key: string) => {
     const translatedKey = `${prefix}_${key}` as keyof TranslationMap;
@@ -136,6 +154,49 @@ export default function Dashboard({
   }, [searchInput]);
 
   useEffect(() => {
+    if (topBorrowedByPeriod[rankingPeriod]) return;
+
+    let isCancelled = false;
+
+    const loadRanking = async () => {
+      setIsRankingLoading(true);
+      setRankingError("");
+
+      try {
+        const response = await fetch(
+          `/api/reports/top-borrowed-books?period=${rankingPeriod}&limit=10`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load report");
+        }
+
+        const data = (await response.json()) as TopBorrowedBook[];
+        if (isCancelled) return;
+
+        setTopBorrowedByPeriod((prev) => ({
+          ...prev,
+          [rankingPeriod]: data,
+        }));
+      } catch {
+        if (!isCancelled) {
+          setRankingError(t("topBorrowedLoadError"));
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsRankingLoading(false);
+        }
+      }
+    };
+
+    void loadRanking();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [rankingPeriod, t, topBorrowedByPeriod]);
+
+  useEffect(() => {
     if (!isPrintModalOpen) return;
 
     const previousOverflow = document.body.style.overflow;
@@ -154,6 +215,57 @@ export default function Dashboard({
     );
   };
 
+  const getReportPeriodLabel = (period: ReportPeriod) => {
+    if (period === "month") return t("topBorrowedPeriodMonth");
+    if (period === "year") return t("topBorrowedPeriodYear");
+    if (period === "all") return t("topBorrowedPeriodAll");
+    return t("topBorrowedPeriod30d");
+  };
+
+  const formatReportDate = (value: string) =>
+    new Intl.DateTimeFormat(
+      lang === "ja" ? "ja-JP" : lang === "en" ? "en-US" : "id-ID",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      },
+    ).format(new Date(value));
+
+  const updateRankingBookSnapshot = (updatedBook: Book) => {
+    setTopBorrowedByPeriod((prev) => {
+      const next = { ...prev };
+
+      for (const period of REPORT_PERIOD_OPTIONS) {
+        next[period] = next[period]?.map((book) =>
+          book.isbn === updatedBook.isbn
+            ? {
+                ...book,
+                title: updatedBook.title,
+                category: updatedBook.category,
+                totalCopies: updatedBook.totalCopies,
+                activeLoans: updatedBook.loanedCopies,
+              }
+            : book,
+        );
+      }
+
+      return next;
+    });
+  };
+
+  const removeRankingBookSnapshot = (isbn: string) => {
+    setTopBorrowedByPeriod((prev) => {
+      const next = { ...prev };
+
+      for (const period of REPORT_PERIOD_OPTIONS) {
+        next[period] = next[period]?.filter((book) => book.isbn !== isbn);
+      }
+
+      return next;
+    });
+  };
+
   const handleDeleteBook = async (isbn: string, title: string) => {
     if (
       !(await dialog.confirm(
@@ -163,7 +275,10 @@ export default function Dashboard({
       return;
     try {
       const res = await fetch(`/api/books?isbn=${isbn}`, { method: "DELETE" });
-      if (res.ok) setBooks(books.filter((b) => b.isbn !== isbn));
+      if (res.ok) {
+        setBooks(books.filter((b) => b.isbn !== isbn));
+        removeRankingBookSnapshot(isbn);
+      }
     } catch {
       await dialog.alert("Gagal menghapus buku");
     }
@@ -304,6 +419,7 @@ export default function Dashboard({
       setBooks(
         books.map((b) => (b.isbn === updated.isbn ? { ...b, ...updated } : b)),
       );
+      updateRankingBookSnapshot(updated);
       setIsEditModalOpen(false);
     } catch (error) {
       await dialog.alert(
@@ -435,6 +551,112 @@ export default function Dashboard({
           </span>
         </div>
       </div>
+
+      <section className={`glass-panel ${styles.rankingPanel}`}>
+        <div className={styles.rankingHeader}>
+          <div>
+            <h2 className={styles.rankingTitle}>
+              {t("topBorrowedBooksTitle")}
+            </h2>
+          </div>
+
+          <div className={styles.rankingControl}>
+            <label className={`form-label ${styles.sortLabel}`}>
+              {t("topBorrowedPeriod")}
+            </label>
+            <CustomSelect
+              buttonClassName={`form-input ${styles.rankingSelect}`}
+              value={rankingPeriod}
+              onChange={(value) => {
+                setRankingError("");
+                setIsRankingExpanded(false);
+                setRankingPeriod(value as ReportPeriod);
+              }}
+              ariaLabel={t("topBorrowedPeriod")}
+              options={REPORT_PERIOD_OPTIONS.map((period) => ({
+                value: period,
+                label: getReportPeriodLabel(period),
+              }))}
+            />
+          </div>
+        </div>
+
+        {rankingError ? (
+          <div className={styles.reportError}>{rankingError}</div>
+        ) : null}
+
+        {isRankingLoading ? (
+          <div className={styles.rankingLoading}>
+            {t("topBorrowedLoading")}
+          </div>
+        ) : topBorrowedBooks.length > 0 ? (
+          <>
+            <ol className={styles.rankingList}>
+              {visibleTopBorrowedBooks.map((book) => {
+                const editableBook = books.find((item) => item.isbn === book.isbn);
+
+                return (
+                  <li key={book.isbn} className={styles.rankingItem}>
+                    <div className={styles.rankingRank}>#{book.rank}</div>
+                    <div className={styles.rankingBookInfo}>
+                      <div className={styles.rankingBookTop}>
+                        <h3 className={styles.rankingBookTitle}>{book.title}</h3>
+                        {book.category ? (
+                          <span className={`badge ${styles.neutralBadge}`}>
+                            {book.category}
+                          </span>
+                        ) : null}
+                      </div>
+                      <p className={styles.rankingBookMeta}>ISBN: {book.isbn}</p>
+                      <div className={styles.rankingStats}>
+                        <span>
+                          <b>{book.totalLoans}</b> {t("topBorrowedTotalLoans")}
+                        </span>
+                        <span>
+                          {t("topBorrowedLastBorrowed")}:{" "}
+                          <b>{formatReportDate(book.lastBorrowedAt)}</b>
+                        </span>
+                        <span>
+                          {t("topBorrowedTotalCopies")}:{" "}
+                          <b>{book.totalCopies}</b>
+                        </span>
+                        <span>
+                          {t("topBorrowedActiveLoans")}:{" "}
+                          <b>{book.activeLoans}</b>
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className={`${styles.cardIconButton} ${styles.rankingEditButton}`}
+                      onClick={() => editableBook && handleEditClick(editableBook)}
+                      disabled={!editableBook}
+                      title={t("topBorrowedEditBook")}
+                      aria-label={`${t("topBorrowedEditBook")}: ${book.title}`}
+                    >
+                      <Icon name="edit" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+
+            {hasHiddenRankingItems ? (
+              <button
+                type="button"
+                className={styles.rankingToggleButton}
+                onClick={() => setIsRankingExpanded((prev) => !prev)}
+              >
+                {isRankingExpanded
+                  ? t("topBorrowedShowLess")
+                  : t("topBorrowedShowMore")}
+              </button>
+            ) : null}
+          </>
+        ) : (
+          <div className={styles.rankingEmpty}>{t("topBorrowedEmpty")}</div>
+        )}
+      </section>
 
       <div className={styles.searchStack}>
         <div className={styles.searchForm}>

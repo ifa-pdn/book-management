@@ -67,4 +67,6 @@ model Loan {
   @@index([bookCopyId])
   @@index([status])
   @@index([dueAt])
+  @@index([borrowedAt])
+  @@index([status, borrowedAt])
 }
