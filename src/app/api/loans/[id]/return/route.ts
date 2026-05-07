@@ -10,13 +10,33 @@ type ReturnLoanPayload = {
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
+
+function parseDateOnlyWithCurrentTime(value: string) {
+  const [year, month, day] = value.split("-").map(Number);
+  const now = new Date();
+
+  return new Date(
+    year,
+    month - 1,
+    day,
+    now.getHours(),
+    now.getMinutes(),
+    now.getSeconds(),
+    now.getMilliseconds(),
+  );
+}
 
 function parseReturnedAt(value?: string) {
   if (!value) {
     return new Date();
   }
 
-  const date = new Date(value);
+  const normalizedValue = value.trim();
+  const date = dateOnlyPattern.test(normalizedValue)
+    ? parseDateOnlyWithCurrentTime(normalizedValue)
+    : new Date(normalizedValue);
+
   if (Number.isNaN(date.getTime())) {
     return null;
   }

@@ -103,6 +103,34 @@
   font-size: 1rem;
 }
 
+.activeLoansHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.activeLoansHeader .cardTitle {
+  margin-bottom: 0;
+}
+
+.sortWrap {
+  min-width: 210px;
+}
+
+.sortLabel {
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.sortSelect {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+}
+
 .formCardHeader {
   display: flex;
   align-items: center;
@@ -351,6 +379,10 @@
 }
 
 @media (max-width: 640px) {
+  .sortWrap {
+    width: 100%;
+  }
+
   .panelToolbar {
     align-items: stretch;
   }

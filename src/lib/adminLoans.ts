@@ -12,6 +12,7 @@ type LoanWithBookCopy = {
   status: string;
   borrowNotes: string | null;
   returnNotes: string | null;
+  createdAt: Date;
   bookCopy: {
     id: string;
     uniqueCode: string;
@@ -38,6 +39,7 @@ export type AdminLoan = {
   status: "active" | "overdue" | "returned";
   borrowNotes: string;
   returnNotes: string;
+  createdAt: string;
 };
 
 export const activeLoanWhere = {
@@ -65,6 +67,7 @@ export function toAdminLoan(loan: LoanWithBookCopy): AdminLoan {
     status: returned ? "returned" : isLoanOverdue(loan) ? "overdue" : "active",
     borrowNotes: loan.borrowNotes ?? "",
     returnNotes: loan.returnNotes ?? "",
+    createdAt: loan.createdAt.toISOString(),
   };
 }
 
@@ -78,9 +81,14 @@ export async function getAdminActiveLoans() {
         },
       },
     },
-    orderBy: {
-      dueAt: "asc",
-    },
+    orderBy: [
+      {
+        borrowedAt: "desc",
+      },
+      {
+        createdAt: "desc",
+      },
+    ],
   });
 
   return loans.map(toAdminLoan);
@@ -98,6 +106,9 @@ export async function getAdminLoanHistory() {
     orderBy: [
       {
         borrowedAt: "desc",
+      },
+      {
+        createdAt: "desc",
       },
     ],
   });

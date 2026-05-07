@@ -27,12 +27,32 @@ type NoteDraft = {
   returnNotes: string;
 };
 
+type ActiveLoanSort =
+  | "borrowed_desc"
+  | "borrowed_asc"
+  | "due_asc"
+  | "due_desc"
+  | "borrower_asc"
+  | "title_asc";
+
 type ApiErrorPayload = {
   code?: string;
   error?: string;
 };
 
-const toDateInputValue = (date: Date) => date.toISOString().slice(0, 10);
+const activeLoanSortOptions: ActiveLoanSort[] = [
+  "borrowed_desc",
+  "borrowed_asc",
+  "due_asc",
+  "due_desc",
+  "borrower_asc",
+  "title_asc",
+];
+
+const pad = (value: number) => String(value).padStart(2, "0");
+
+const toDateInputValue = (date: Date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
 const getDefaultDueDate = () => {
   const date = new Date();
@@ -43,10 +63,56 @@ const getDefaultDueDate = () => {
 const normalizeCopySearchCode = (value: string) =>
   value.trim().replace(/^AUC-/i, "").toUpperCase();
 
-const sortLoans = (items: AdminLoan[]) =>
-  [...items].sort(
-    (a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime(),
-  );
+const getDateTime = (value: string | null | undefined) => {
+  if (!value) return 0;
+
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+
+const compareNewestLoan = (a: AdminLoan, b: AdminLoan) =>
+  getDateTime(b.borrowedAt) - getDateTime(a.borrowedAt) ||
+  getDateTime(b.createdAt) - getDateTime(a.createdAt);
+
+const sortLoans = (items: AdminLoan[], sortOrder: ActiveLoanSort) =>
+  [...items].sort((a, b) => {
+    if (sortOrder === "borrowed_asc") {
+      return (
+        getDateTime(a.borrowedAt) - getDateTime(b.borrowedAt) ||
+        getDateTime(a.createdAt) - getDateTime(b.createdAt)
+      );
+    }
+
+    if (sortOrder === "due_asc") {
+      return (
+        getDateTime(a.dueAt) - getDateTime(b.dueAt) ||
+        compareNewestLoan(a, b)
+      );
+    }
+
+    if (sortOrder === "due_desc") {
+      return (
+        getDateTime(b.dueAt) - getDateTime(a.dueAt) ||
+        compareNewestLoan(a, b)
+      );
+    }
+
+    if (sortOrder === "borrower_asc") {
+      return (
+        a.borrowerName.localeCompare(b.borrowerName) ||
+        compareNewestLoan(a, b)
+      );
+    }
+
+    if (sortOrder === "title_asc") {
+      return (
+        a.bookTitle.localeCompare(b.bookTitle) ||
+        compareNewestLoan(a, b)
+      );
+    }
+
+    return compareNewestLoan(a, b);
+  });
 
 export default function LoanManagementPage({
   initialBooks,
@@ -57,9 +123,9 @@ export default function LoanManagementPage({
 }) {
   const { t, lang } = useI18n();
   const [books, setBooks] = useState<Book[]>(initialBooks);
-  const [loans, setLoans] = useState<AdminLoan[]>(() =>
-    sortLoans(initialLoans),
-  );
+  const [loans, setLoans] = useState<AdminLoan[]>(initialLoans);
+  const [loanSortOrder, setLoanSortOrder] =
+    useState<ActiveLoanSort>("borrowed_desc");
   const [loanCopySearch, setLoanCopySearch] = useState("");
   const [loanForm, setLoanForm] = useState<LoanForm>({
     bookCopyId: "",
@@ -85,6 +151,10 @@ export default function LoanManagementPage({
   const [loanError, setLoanError] = useState("");
   const [isLoanFormOpen, setIsLoanFormOpen] = useState(false);
   const overdueLoanCount = loans.filter((loan) => loan.status === "overdue").length;
+  const sortedLoans = useMemo(
+    () => sortLoans(loans, loanSortOrder),
+    [loanSortOrder, loans],
+  );
 
   const loanCopyOptions = useMemo(
     () =>
@@ -134,6 +204,19 @@ export default function LoanManagementPage({
       },
     ).format(new Date(value));
 
+  const formatLoanDateTime = (value: string) =>
+    new Intl.DateTimeFormat(
+      lang === "ja" ? "ja-JP" : lang === "en" ? "en-US" : "id-ID",
+      {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      },
+    ).format(new Date(value));
+
   const refreshAdminData = async () => {
     const [booksRes, loansRes] = await Promise.all([
       fetch("/api/books"),
@@ -150,7 +233,16 @@ export default function LoanManagementPage({
     ])) as [Book[], AdminLoan[]];
 
     setBooks(nextBooks);
-    setLoans(sortLoans(nextLoans));
+    setLoans(nextLoans);
+  };
+
+  const getSortLabel = (sort: ActiveLoanSort) => {
+    if (sort === "borrowed_desc") return t("activeLoansSortBorrowedDesc");
+    if (sort === "borrowed_asc") return t("activeLoansSortBorrowedAsc");
+    if (sort === "due_asc") return t("activeLoansSortDueAsc");
+    if (sort === "due_desc") return t("activeLoansSortDueDesc");
+    if (sort === "borrower_asc") return t("activeLoansSortBorrowerAsc");
+    return t("activeLoansSortTitleAsc");
   };
 
   const getLoanApiErrorMessage = (
@@ -196,7 +288,7 @@ export default function LoanManagementPage({
         );
       }
 
-      setLoans((prev) => sortLoans([data as AdminLoan, ...prev]));
+      setLoans((prev) => [data as AdminLoan, ...prev]);
       setLoanForm({
         bookCopyId: "",
         borrowerName: "",
@@ -297,9 +389,7 @@ export default function LoanManagementPage({
 
       const updatedLoan = data as AdminLoan;
       setLoans((prev) =>
-        sortLoans(
-          prev.map((loan) => (loan.id === updatedLoan.id ? updatedLoan : loan)),
-        ),
+        prev.map((loan) => (loan.id === updatedLoan.id ? updatedLoan : loan)),
       );
       setReturnNotes((prev) => ({
         ...prev,
@@ -507,9 +597,26 @@ export default function LoanManagementPage({
             </form>
 
             <div className={styles.activeLoansCard}>
-              <h2 className={styles.cardTitle}>{t("activeLoansTitle")}</h2>
+              <div className={styles.activeLoansHeader}>
+                <h2 className={styles.cardTitle}>{t("activeLoansTitle")}</h2>
+                <div className={styles.sortWrap}>
+                  <label className={`form-label ${styles.sortLabel}`}>
+                    {t("activeLoansSortBy")}
+                  </label>
+                  <CustomSelect
+                    buttonClassName={`form-input ${styles.sortSelect}`}
+                    value={loanSortOrder}
+                    onChange={(value) => setLoanSortOrder(value as ActiveLoanSort)}
+                    ariaLabel={t("activeLoansSortBy")}
+                    options={activeLoanSortOptions.map((sort) => ({
+                      value: sort,
+                      label: getSortLabel(sort),
+                    }))}
+                  />
+                </div>
+              </div>
               <div className={styles.loanList}>
-                {loans.map((loan) => {
+                {sortedLoans.map((loan) => {
                   const isEditingNotes = editingNotesLoanId === loan.id;
                   const isSavingNotes = savingNotesLoanId === loan.id;
                   const displayReturnNotes =
@@ -560,7 +667,7 @@ export default function LoanManagementPage({
                     <div className={styles.loanDateGrid}>
                       <div>
                         {t("borrowedAtShortLabel")}:{" "}
-                        {formatLoanDate(loan.borrowedAt)}
+                        {formatLoanDateTime(loan.borrowedAt)}
                       </div>
                       <div>
                         {t("dueAtShortLabel")}: {formatLoanDate(loan.dueAt)}
@@ -672,7 +779,7 @@ export default function LoanManagementPage({
                   </div>
                   );
                 })}
-                {loans.length === 0 ? (
+                {sortedLoans.length === 0 ? (
                   <div className={styles.emptyState}>{t("noActiveLoans")}</div>
                 ) : null}
               </div>

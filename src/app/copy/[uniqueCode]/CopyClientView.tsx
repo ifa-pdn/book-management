@@ -46,7 +46,10 @@ type ApiErrorPayload = {
   error?: string;
 };
 
-const toDateInputValue = (date: Date) => date.toISOString().slice(0, 10);
+const pad = (value: number) => String(value).padStart(2, "0");
+
+const toDateInputValue = (date: Date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
 export default function CopyClientView({
   copy,

@@ -19,13 +19,44 @@ type CreateLoanPayload = {
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 const borrowerClassOptions = new Set(["Kelas 1", "Kelas 2"]);
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
 
-function parseDate(value: string | undefined) {
+function parseDateOnly(value: string, time: "now" | "start" | "end") {
+  const [year, month, day] = value.split("-").map(Number);
+  const now = new Date();
+
+  if (time === "now") {
+    return new Date(
+      year,
+      month - 1,
+      day,
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+      now.getMilliseconds(),
+    );
+  }
+
+  if (time === "end") {
+    return new Date(year, month - 1, day, 23, 59, 59, 999);
+  }
+
+  return new Date(year, month - 1, day);
+}
+
+function parseDate(
+  value: string | undefined,
+  dateOnlyTime: "now" | "start" | "end",
+) {
   if (!value) {
     return null;
   }
 
-  const date = new Date(value);
+  const normalizedValue = value.trim();
+  const date = dateOnlyPattern.test(normalizedValue)
+    ? parseDateOnly(normalizedValue, dateOnlyTime)
+    : new Date(normalizedValue);
+
   if (Number.isNaN(date.getTime())) {
     return null;
   }
@@ -49,8 +80,8 @@ export async function POST(request: Request) {
     const bookCopyId = body.bookCopyId?.trim();
     const borrowerName = body.borrowerName?.trim();
     const borrowerClass = body.borrowerClass?.trim();
-    const borrowedAt = parseDate(body.borrowedAt);
-    const dueAt = parseDate(body.dueAt);
+    const borrowedAt = parseDate(body.borrowedAt, "now");
+    const dueAt = parseDate(body.dueAt, "end");
 
     if (!bookCopyId || !borrowerName || !borrowerClass || !borrowedAt || !dueAt) {
       return NextResponse.json(

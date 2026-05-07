@@ -42,6 +42,14 @@ interface SelectedPrintCopy {
 
 type Book = AdminCatalogBook;
 
+type DeleteBookResponse = {
+  success?: boolean;
+  deletedBook?: boolean;
+  isbn?: string;
+  book?: Book | null;
+  error?: string;
+};
+
 type PrintableLabelsProps = {
   copies: SelectedPrintCopy[];
 };
@@ -419,13 +427,21 @@ export default function Dashboard({
     )
       return;
     try {
-      const res = await fetch(`/api/books?isbn=${isbn}`, { method: "DELETE" });
-      if (res.ok) {
-        setBooks(books.filter((b) => b.isbn !== isbn));
-        removeRankingBookSnapshot(isbn);
+      const res = await fetch(`/api/books?isbn=${encodeURIComponent(isbn)}`, {
+        method: "DELETE",
+      });
+      const data = (await res.json()) as DeleteBookResponse;
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Gagal menghapus buku");
       }
-    } catch {
-      await dialog.alert("Gagal menghapus buku");
+
+      setBooks((currentBooks) => currentBooks.filter((b) => b.isbn !== isbn));
+      removeRankingBookSnapshot(isbn);
+    } catch (error) {
+      await dialog.alert(
+        error instanceof Error ? error.message : "Gagal menghapus buku",
+      );
     }
   };
 
@@ -433,24 +449,49 @@ export default function Dashboard({
     if (!(await dialog.confirm(`Hapus eksemplar fisik dengan kode ${copyId}?`)))
       return;
     try {
-      const res = await fetch(`/api/books?copyId=${copyId}`, {
+      const res = await fetch(`/api/books?copyId=${encodeURIComponent(copyId)}`, {
         method: "DELETE",
       });
-      if (res.ok) {
-        setBooks(
-          books.map((b) => {
-            if (b.isbn === isbn) {
-              return {
-                ...b,
-                copies: b.copies.filter((c) => c.uniqueCode !== copyId),
-              };
-            }
-            return b;
-          }),
-        );
+      const data = (await res.json()) as DeleteBookResponse;
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Gagal menghapus eksemplar");
       }
-    } catch {
-      await dialog.alert("Gagal menghapus eksemplar");
+
+      if (data.deletedBook) {
+        setBooks((currentBooks) => currentBooks.filter((b) => b.isbn !== isbn));
+        removeRankingBookSnapshot(isbn);
+        return;
+      }
+
+      if (data.book) {
+        const updatedBook = data.book;
+
+        setBooks((currentBooks) =>
+          currentBooks.map((book) =>
+            book.isbn === isbn ? updatedBook : book,
+          ),
+        );
+        updateRankingBookSnapshot(updatedBook);
+        return;
+      }
+
+      setBooks((currentBooks) =>
+        currentBooks.map((book) =>
+          book.isbn === isbn
+            ? {
+                ...book,
+                totalCopies: Math.max(0, book.totalCopies - 1),
+                availableCopies: Math.max(0, book.availableCopies - 1),
+                copies: book.copies.filter((copy) => copy.uniqueCode !== copyId),
+              }
+            : book,
+        ),
+      );
+    } catch (error) {
+      await dialog.alert(
+        error instanceof Error ? error.message : "Gagal menghapus eksemplar",
+      );
     }
   };
 

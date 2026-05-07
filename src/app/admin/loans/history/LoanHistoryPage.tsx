@@ -43,6 +43,17 @@ const isReturnedLate = (loan: AdminLoan) =>
   new Date(loan.returnedAt as string).getTime() >
     new Date(loan.dueAt).getTime();
 
+const getDateTime = (value: string | null | undefined) => {
+  if (!value) return 0;
+
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
+
+const compareNewestLoan = (a: AdminLoan, b: AdminLoan) =>
+  getDateTime(b.borrowedAt) - getDateTime(a.borrowedAt) ||
+  getDateTime(b.createdAt) - getDateTime(a.createdAt);
+
 export default function LoanHistoryPage({
   initialLoans,
 }: {
@@ -198,29 +209,41 @@ export default function LoanHistoryPage({
       })
       .sort((a, b) => {
         if (sortOrder === "borrowed_asc") {
-          return new Date(a.borrowedAt).getTime() - new Date(b.borrowedAt).getTime();
+          return (
+            getDateTime(a.borrowedAt) - getDateTime(b.borrowedAt) ||
+            getDateTime(a.createdAt) - getDateTime(b.createdAt)
+          );
         }
 
         if (sortOrder === "due_asc") {
-          return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime();
+          return (
+            getDateTime(a.dueAt) - getDateTime(b.dueAt) ||
+            compareNewestLoan(a, b)
+          );
         }
 
         if (sortOrder === "returned_desc") {
           return (
-            new Date(b.returnedAt ?? 0).getTime() -
-            new Date(a.returnedAt ?? 0).getTime()
+            getDateTime(b.returnedAt) - getDateTime(a.returnedAt) ||
+            compareNewestLoan(a, b)
           );
         }
 
         if (sortOrder === "borrower_asc") {
-          return a.borrowerName.localeCompare(b.borrowerName);
+          return (
+            a.borrowerName.localeCompare(b.borrowerName) ||
+            compareNewestLoan(a, b)
+          );
         }
 
         if (sortOrder === "title_asc") {
-          return a.bookTitle.localeCompare(b.bookTitle);
+          return (
+            a.bookTitle.localeCompare(b.bookTitle) ||
+            compareNewestLoan(a, b)
+          );
         }
 
-        return new Date(b.borrowedAt).getTime() - new Date(a.borrowedAt).getTime();
+        return compareNewestLoan(a, b);
       });
   }, [loans, searchInput, sortOrder, statusFilter, t]);
 

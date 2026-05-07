@@ -186,16 +186,94 @@ export async function DELETE(request: Request) {
       const copyId = searchParams.get('copyId');
 
       if (copyId) {
-          await prisma.bookCopy.delete({ where: { uniqueCode: copyId } });
-          return NextResponse.json({ success: true });
+          const copy = await prisma.bookCopy.findUnique({
+            where: { uniqueCode: copyId },
+            select: { id: true, isbn: true },
+          });
+
+          if (!copy) {
+            return NextResponse.json(
+              { error: "Copy not found" },
+              { status: 404 },
+            );
+          }
+
+          const deletedBook = await prisma.$transaction(async (tx) => {
+            await tx.loan.deleteMany({ where: { bookCopyId: copy.id } });
+            await tx.bookCopy.delete({ where: { uniqueCode: copyId } });
+
+            const remainingCopies = await tx.bookCopy.count({
+              where: { isbn: copy.isbn },
+            });
+
+            if (remainingCopies > 0) return false;
+
+            await tx.book.delete({ where: { isbn: copy.isbn } });
+            return true;
+          });
+
+          if (deletedBook) {
+            return NextResponse.json({
+              success: true,
+              deletedBook: true,
+              isbn: copy.isbn,
+              book: null,
+            });
+          }
+
+          const updatedBook =
+            (await getAdminCatalogBooks()).find(
+              (book) => book.isbn === copy.isbn,
+            ) ??
+            null;
+
+          return NextResponse.json({
+            success: true,
+            deletedBook: false,
+            isbn: copy.isbn,
+            book: updatedBook,
+          });
       }
 
       if (isbn) {
-          await prisma.$transaction([
-            prisma.bookCopy.deleteMany({ where: { isbn } }),
-            prisma.book.delete({ where: { isbn } })
-          ]);
-          return NextResponse.json({ success: true });
+          const book = await prisma.book.findUnique({
+            where: { isbn },
+            select: { isbn: true },
+          });
+
+          if (!book) {
+            return NextResponse.json(
+              { error: "Book not found" },
+              { status: 404 },
+            );
+          }
+
+          await prisma.$transaction(async (tx) => {
+            const copies = await tx.bookCopy.findMany({
+              where: { isbn },
+              select: { id: true },
+            });
+            const copyIds = copies.map((copy) => copy.id);
+
+            if (copyIds.length > 0) {
+              await tx.loan.deleteMany({
+                where: {
+                  bookCopyId: {
+                    in: copyIds,
+                  },
+                },
+              });
+            }
+
+            await tx.bookCopy.deleteMany({ where: { isbn } });
+            await tx.book.delete({ where: { isbn } });
+          });
+
+          return NextResponse.json({
+            success: true,
+            deletedBook: true,
+            isbn,
+          });
       }
       
       return NextResponse.json({ error: "Missing isbn or copyId" }, { status: 400 });
