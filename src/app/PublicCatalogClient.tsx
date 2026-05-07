@@ -9,6 +9,7 @@ import Icon from "../components/Icon";
 import CustomSelect from "../components/CustomSelect";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import type { PublicCatalogBook } from "../lib/bookCatalog";
+import { usePersistentStringOption } from "../lib/usePersistentStringOption";
 import styles from "./PublicCatalogClient.module.css";
 
 const CATEGORIES = [
@@ -20,6 +21,17 @@ const CATEGORIES = [
   "Kentei",
   "Office",
 ];
+const catalogSortOptions = [
+  "latest",
+  "title",
+  "pub_date",
+  "stock_desc",
+  "stock_asc",
+  "category",
+] as const;
+const publicCatalogSortStorageKey = "auc-books:public-catalog-sort";
+
+type CatalogSort = (typeof catalogSortOptions)[number];
 
 export default function PublicCatalogClient({
   initialBooks,
@@ -33,7 +45,11 @@ export default function PublicCatalogClient({
   const [books] = useState<PublicCatalogBook[]>(initialBooks);
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState("latest");
+  const [sortOrder, setSortOrder] = usePersistentStringOption<CatalogSort>(
+    publicCatalogSortStorageKey,
+    "latest",
+    catalogSortOptions,
+  );
 
   const filteredBooks = useMemo(() => {
     const q = searchInput.trim().toLowerCase();
@@ -146,7 +162,7 @@ export default function PublicCatalogClient({
             <CustomSelect
               buttonClassName={`form-input ${styles.sortSelect}`}
               value={sortOrder}
-              onChange={setSortOrder}
+              onChange={(value) => setSortOrder(value as CatalogSort)}
               ariaLabel={t("sortBy")}
               options={[
                 { value: "latest", label: t("sortLatest") },

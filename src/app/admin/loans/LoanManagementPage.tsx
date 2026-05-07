@@ -9,6 +9,7 @@ import Icon from "../../../components/Icon";
 import type { AdminCatalogBook } from "../../../lib/bookCatalog";
 import type { AdminLoan } from "../../../lib/adminLoans";
 import { getBorrowerClassLabel } from "../../../lib/borrowerClassLabel";
+import { usePersistentStringOption } from "../../../lib/usePersistentStringOption";
 import styles from "./LoanManagementPage.module.css";
 
 type Book = AdminCatalogBook;
@@ -48,6 +49,8 @@ const activeLoanSortOptions: ActiveLoanSort[] = [
   "borrower_asc",
   "title_asc",
 ];
+
+const activeLoanSortStorageKey = "auc-books:active-loans-sort";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -125,7 +128,11 @@ export default function LoanManagementPage({
   const [books, setBooks] = useState<Book[]>(initialBooks);
   const [loans, setLoans] = useState<AdminLoan[]>(initialLoans);
   const [loanSortOrder, setLoanSortOrder] =
-    useState<ActiveLoanSort>("borrowed_desc");
+    usePersistentStringOption<ActiveLoanSort>(
+      activeLoanSortStorageKey,
+      "borrowed_desc",
+      activeLoanSortOptions,
+    );
   const [loanCopySearch, setLoanCopySearch] = useState("");
   const [loanForm, setLoanForm] = useState<LoanForm>({
     bookCopyId: "",

@@ -13,6 +13,7 @@ import Icon from "../../components/Icon";
 import type { AdminCatalogBook } from "../../lib/bookCatalog";
 import type { AdminLoan } from "../../lib/adminLoans";
 import type { ReportPeriod, TopBorrowedBook } from "../../lib/loanReports";
+import { usePersistentStringOption } from "../../lib/usePersistentStringOption";
 import styles from "./AdminDashboard.module.css";
 
 const CATEGORIES = [
@@ -26,6 +27,17 @@ const CATEGORIES = [
 ];
 const SIZES = ["A4", "A5", "B5", "B5 変形", "B6", "四六判", "文庫"];
 const REPORT_PERIOD_OPTIONS: ReportPeriod[] = ["30d", "month", "year", "all"];
+const catalogSortOptions = [
+  "latest",
+  "title",
+  "pub_date",
+  "stock_desc",
+  "stock_asc",
+  "category",
+] as const;
+const adminCatalogSortStorageKey = "auc-books:admin-catalog-sort";
+
+type CatalogSort = (typeof catalogSortOptions)[number];
 type TranslationMap = typeof dictionary.id;
 
 interface EditableBookCopy {
@@ -82,7 +94,11 @@ export default function Dashboard({
   const [editionInt, setEditionInt] = useState(1);
   const [printingInt, setPrintingInt] = useState(1);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [sortOrder, setSortOrder] = useState("latest");
+  const [sortOrder, setSortOrder] = usePersistentStringOption<CatalogSort>(
+    adminCatalogSortStorageKey,
+    "latest",
+    catalogSortOptions,
+  );
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
   const [selectedBooks, setSelectedBooks] = useState<string[]>([]); // Menyimpan daftar ISBN yang diceklis
@@ -936,7 +952,7 @@ export default function Dashboard({
             <CustomSelect
               buttonClassName={`form-input ${styles.sortSelect}`}
               value={sortOrder}
-              onChange={setSortOrder}
+              onChange={(value) => setSortOrder(value as CatalogSort)}
               ariaLabel={t("sortBy")}
               options={[
                 { value: "latest", label: t("sortLatest") },

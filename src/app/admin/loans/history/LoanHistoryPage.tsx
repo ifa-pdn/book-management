@@ -7,6 +7,7 @@ import Icon from "../../../../components/Icon";
 import { dictionary, useI18n } from "../../../../contexts/I18nContext";
 import type { AdminLoan } from "../../../../lib/adminLoans";
 import { getBorrowerClassLabel } from "../../../../lib/borrowerClassLabel";
+import { usePersistentStringOption } from "../../../../lib/usePersistentStringOption";
 import styles from "./LoanHistoryPage.module.css";
 
 type HistoryFilter = "all" | "active" | "overdue" | "returned";
@@ -27,6 +28,8 @@ const sortOptions: HistorySort[] = [
   "borrower_asc",
   "title_asc",
 ];
+
+const historySortStorageKey = "auc-books:loan-history-sort";
 
 type NoteDraft = {
   borrowNotes: string;
@@ -63,7 +66,11 @@ export default function LoanHistoryPage({
   const [loans, setLoans] = useState<AdminLoan[]>(initialLoans);
   const [searchInput, setSearchInput] = useState("");
   const [statusFilter, setStatusFilter] = useState<HistoryFilter>("all");
-  const [sortOrder, setSortOrder] = useState<HistorySort>("borrowed_desc");
+  const [sortOrder, setSortOrder] = usePersistentStringOption<HistorySort>(
+    historySortStorageKey,
+    "borrowed_desc",
+    sortOptions,
+  );
   const [editingNotesLoanId, setEditingNotesLoanId] = useState<string | null>(
     null,
   );
