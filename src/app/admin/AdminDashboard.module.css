@@ -82,6 +82,7 @@
 }
 
 .headerBadges {
+  align-items: center;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -89,14 +90,39 @@
 }
 
 .badgeReset {
+  align-items: center;
   background: var(--dashboard-base-soft);
   color: var(--dashboard-ink);
+  display: inline-flex;
+  min-height: 34px;
   margin-right: 0;
+  margin-top: 0;
+  padding: 0.35rem 0.7rem;
 }
 
 .headerBadges :global(.badge-red) {
   background: var(--dashboard-danger-soft);
   color: var(--dashboard-danger);
+}
+
+.catalogLink {
+  align-items: center;
+  background: #fff;
+  border: 1px solid rgba(33, 158, 188, 0.24);
+  border-radius: 8px;
+  color: var(--dashboard-secondary);
+  display: inline-flex;
+  font-size: 0.86rem;
+  font-weight: 700;
+  gap: 0.45rem;
+  min-height: 34px;
+  padding: 0.35rem 0.7rem;
+  text-decoration: none;
+}
+
+.catalogLink:hover {
+  background: var(--dashboard-base-soft);
+  border-color: var(--dashboard-secondary);
 }
 
 .rankingPanel {
@@ -125,9 +151,24 @@
 .rankingControl {
   align-items: center;
   display: flex;
-  flex: 0 0 190px;
-  gap: 0.6rem;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  gap: 0.7rem;
   justify-content: flex-end;
+}
+
+.rankingPeriodControl,
+.rankingNavControls {
+  align-items: center;
+  display: inline-flex;
+}
+
+.rankingPeriodControl {
+  gap: 0.6rem;
+}
+
+.rankingNavControls {
+  gap: 0.4rem;
 }
 
 .rankingSelect {
@@ -142,24 +183,92 @@
   white-space: nowrap;
 }
 
+.rankingCarousel {
+  position: relative;
+}
+
 .rankingList {
-  display: flex;
-  flex-direction: column;
+  cursor: grab;
+  display: grid;
   gap: 0.75rem;
+  grid-auto-columns: minmax(300px, 360px);
+  grid-auto-flow: column;
   list-style: none;
   margin: 0;
-  padding: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 0.1rem 0.05rem 0.45rem;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.rankingList::-webkit-scrollbar {
+  display: none;
+}
+
+.rankingListDragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+  scroll-snap-type: none;
+}
+
+.rankingListDragging .rankingItem {
+  pointer-events: none;
 }
 
 .rankingItem {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) 38px;
-  gap: 0.9rem;
+  position: relative;
   align-items: center;
+  scroll-snap-align: start;
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: 72px minmax(0, 1fr);
   border: 1px solid rgba(142, 202, 230, 0.36);
-  border-radius: 10px;
-  background: rgba(142, 202, 230, 0.1);
-  padding: 0.9rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  min-height: 122px;
+  padding: 0.8rem;
+}
+
+.rankingCoverArea {
+  align-items: center;
+  display: flex;
+  height: auto;
+  justify-content: center;
+  min-height: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.rankingCoverFrame {
+  border-radius: 6px;
+  height: 96px;
+  overflow: hidden;
+  position: relative;
+  width: 64px;
+}
+
+.rankingCoverImage {
+  object-fit: cover;
+}
+
+.rankingNoCover {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(142, 202, 230, 0.38);
+  border-radius: 6px;
+  color: var(--dashboard-ink-muted);
+  display: flex;
+  font-size: 0.72rem;
+  height: 96px;
+  justify-content: center;
+  padding: 0.45rem;
+  text-align: center;
+  width: 64px;
 }
 
 .rankingRank {
@@ -168,78 +277,88 @@
   border-radius: 999px;
   color: #fff;
   display: inline-flex;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  height: 38px;
+  height: 30px;
   justify-content: center;
-  width: 46px;
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  width: 30px;
+  z-index: 1;
 }
 
 .rankingBookInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100px;
   min-width: 0;
+  padding-right: 2rem;
+  width: 100%;
 }
 
 .rankingBookTop {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.2rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0;
+}
+
+.rankingCategoryBadge {
+  align-self: flex-start;
+  max-width: 100%;
+  width: max-content;
 }
 
 .rankingBookTitle {
   color: var(--dashboard-ink);
-  font-size: 0.96rem;
-  line-height: 1.3;
+  display: -webkit-box;
+  font-size: 0.95rem;
+  line-height: 1.28;
   margin: 0;
-}
-
-.rankingBookMeta {
-  color: var(--dashboard-ink-muted);
-  font-size: 0.78rem;
-  margin: 0 0 0.5rem;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .rankingStats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.75rem;
+  display: grid;
+  gap: 0.35rem;
   color: var(--dashboard-ink-muted);
   font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 
 .rankingStats b {
   color: var(--dashboard-ink);
 }
 
-.rankingEditButton {
-  justify-self: end;
-}
-
-.rankingEditButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.rankingToggleButton {
+.rankingNavButton {
   align-items: center;
   background: #fff;
   border: 1px solid rgba(33, 158, 188, 0.24);
-  border-radius: 999px;
-  color: var(--dashboard-secondary);
+  border-radius: 50%;
+  box-shadow: 0 10px 22px rgba(2, 48, 71, 0.08);
+  color: var(--dashboard-ink);
   cursor: pointer;
   display: inline-flex;
-  font-size: 0.82rem;
-  font-weight: 700;
+  height: 38px;
   justify-content: center;
-  margin-top: 0.9rem;
-  min-height: 38px;
-  padding: 0.45rem 0.9rem;
+  width: 38px;
 }
 
-.rankingToggleButton:hover {
+.rankingNavButton:hover:not(:disabled) {
   background: var(--dashboard-base-soft);
   border-color: var(--dashboard-secondary);
+}
+
+.rankingNavButton:disabled {
+  cursor: default;
+  opacity: 0.36;
+  pointer-events: none;
 }
 
 .rankingEmpty,
@@ -1146,13 +1265,8 @@
 }
 
 @media (max-width: 767px) {
-  .rankingItem {
-    grid-template-columns: 48px minmax(0, 1fr);
-  }
-
-  .rankingEditButton {
-    grid-column: 2;
-    justify-self: start;
+  .rankingList {
+    grid-auto-columns: minmax(286px, 82vw);
   }
 
   .filterBar {
@@ -1174,6 +1288,32 @@
 }
 
 @media (max-width: 411px) {
+  .rankingList {
+    grid-auto-columns: minmax(260px, 86vw);
+  }
+
+  .rankingItem {
+    gap: 0.7rem;
+    grid-template-columns: 58px minmax(0, 1fr);
+    min-height: 106px;
+    padding: 0.75rem;
+  }
+
+  .rankingCoverArea {
+    min-height: 88px;
+  }
+
+  .rankingCoverFrame,
+  .rankingNoCover {
+    height: 84px;
+    width: 54px;
+  }
+
+  .rankingBookInfo {
+    min-height: 88px;
+    padding-right: 1.8rem;
+  }
+
   .bookCover {
     width: 50px;
     height: 50px;

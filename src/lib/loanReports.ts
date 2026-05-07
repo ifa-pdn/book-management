@@ -9,6 +9,7 @@ export type TopBorrowedBook = {
   rank: number;
   isbn: string;
   title: string;
+  coverUrl: string;
   category: string;
   totalLoans: number;
   lastBorrowedAt: string;
@@ -84,6 +85,7 @@ export async function getTopBorrowedBooks({
       rankingMap.set(book.isbn, {
         isbn: book.isbn,
         title: book.title,
+        coverUrl: book.coverUrl ?? "",
         category: book.category ?? "",
         totalLoans: 1,
         lastBorrowedAt: loan.borrowedAt.toISOString(),
@@ -153,6 +155,7 @@ export async function getTopBorrowedBooks({
       rank: index + 1,
       isbn: book.isbn,
       title: book.title,
+      coverUrl: book.coverUrl,
       category: book.category,
       totalLoans: book.totalLoans,
       lastBorrowedAt: book.lastBorrowedAt,

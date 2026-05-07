@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n, dictionary } from "../../contexts/I18nContext";
 import { QRCodeSVG } from "qrcode.react";
 import CustomCombobox from "../../components/CustomCombobox";
@@ -89,18 +90,30 @@ export default function Dashboard({
   >({
     "30d": initialTopBorrowedBooks,
   });
-  const [isRankingExpanded, setIsRankingExpanded] = useState(false);
   const [isRankingLoading, setIsRankingLoading] = useState(false);
   const [rankingError, setRankingError] = useState("");
   const selectAllRef = useRef<HTMLInputElement>(null);
+  const rankingListRef = useRef<HTMLOListElement>(null);
+  const [rankingScrollState, setRankingScrollState] = useState({
+    canScrollPrev: false,
+    canScrollNext: false,
+  });
+  const [isRankingDragging, setIsRankingDragging] = useState(false);
+  const rankingDragRef = useRef({
+    isDragging: false,
+    startX: 0,
+    scrollLeft: 0,
+    lastX: 0,
+    lastTime: 0,
+    velocity: 0,
+    momentumFrame: 0,
+    pointerId: null as number | null,
+    hasMoved: false,
+  });
   const overdueLoanCount = initialLoans.filter(
     (loan) => loan.status === "overdue",
   ).length;
   const topBorrowedBooks = topBorrowedByPeriod[rankingPeriod] ?? [];
-  const visibleTopBorrowedBooks = isRankingExpanded
-    ? topBorrowedBooks
-    : topBorrowedBooks.slice(0, 3);
-  const hasHiddenRankingItems = topBorrowedBooks.length > 3;
 
   const getTrans = (prefix: string, key: string) => {
     const translatedKey = `${prefix}_${key}` as keyof TranslationMap;
@@ -222,15 +235,146 @@ export default function Dashboard({
     return t("topBorrowedPeriod30d");
   };
 
-  const formatReportDate = (value: string) =>
-    new Intl.DateTimeFormat(
-      lang === "ja" ? "ja-JP" : lang === "en" ? "en-US" : "id-ID",
-      {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      },
-    ).format(new Date(value));
+  const updateRankingScrollState = useCallback(() => {
+    const list = rankingListRef.current;
+    if (!list) {
+      setRankingScrollState({ canScrollPrev: false, canScrollNext: false });
+      return;
+    }
+
+    const maxScrollLeft = list.scrollWidth - list.clientWidth;
+    setRankingScrollState({
+      canScrollPrev: list.scrollLeft > 4,
+      canScrollNext: list.scrollLeft < maxScrollLeft - 4,
+    });
+  }, []);
+
+  const scrollRanking = (direction: "prev" | "next") => {
+    const list = rankingListRef.current;
+    if (!list) return;
+
+    const distance = Math.max(240, Math.round(list.clientWidth * 0.82));
+    list.scrollBy({
+      left: direction === "next" ? distance : -distance,
+      behavior: "smooth",
+    });
+  };
+
+  const stopRankingMomentum = useCallback(() => {
+    const drag = rankingDragRef.current;
+    if (!drag.momentumFrame) return;
+
+    window.cancelAnimationFrame(drag.momentumFrame);
+    drag.momentumFrame = 0;
+  }, []);
+
+  const handleRankingPointerDown = (
+    event: React.PointerEvent<HTMLOListElement>,
+  ) => {
+    if (event.button !== 0) return;
+
+    const list = event.currentTarget;
+    stopRankingMomentum();
+    list.setPointerCapture(event.pointerId);
+
+    rankingDragRef.current = {
+      isDragging: true,
+      startX: event.clientX,
+      scrollLeft: list.scrollLeft,
+      lastX: event.clientX,
+      lastTime: performance.now(),
+      velocity: 0,
+      momentumFrame: 0,
+      pointerId: event.pointerId,
+      hasMoved: false,
+    };
+    setIsRankingDragging(true);
+  };
+
+  const handleRankingPointerMove = (
+    event: React.PointerEvent<HTMLOListElement>,
+  ) => {
+    const drag = rankingDragRef.current;
+    if (!drag.isDragging) return;
+
+    const list = event.currentTarget;
+    const deltaX = event.clientX - drag.startX;
+    if (Math.abs(deltaX) > 3) {
+      drag.hasMoved = true;
+      event.preventDefault();
+    }
+
+    list.scrollLeft = drag.scrollLeft - deltaX;
+
+    const now = performance.now();
+    const elapsed = now - drag.lastTime;
+    if (elapsed > 0) {
+      drag.velocity = (event.clientX - drag.lastX) / elapsed;
+      drag.lastX = event.clientX;
+      drag.lastTime = now;
+    }
+
+    updateRankingScrollState();
+  };
+
+  const handleRankingPointerEnd = (
+    event: React.PointerEvent<HTMLOListElement>,
+  ) => {
+    const list = event.currentTarget;
+    const drag = rankingDragRef.current;
+    if (!drag.isDragging) return;
+
+    drag.isDragging = false;
+    if (drag.pointerId !== null && list.hasPointerCapture(drag.pointerId)) {
+      list.releasePointerCapture(drag.pointerId);
+    }
+
+    let velocity = drag.velocity * 16;
+    if (!drag.hasMoved || Math.abs(velocity) < 0.8) {
+      setIsRankingDragging(false);
+      updateRankingScrollState();
+      return;
+    }
+
+    const glide = () => {
+      list.scrollLeft -= velocity;
+      velocity *= 0.9;
+      updateRankingScrollState();
+
+      if (Math.abs(velocity) < 0.35) {
+        rankingDragRef.current.momentumFrame = 0;
+        setIsRankingDragging(false);
+        updateRankingScrollState();
+        return;
+      }
+
+      rankingDragRef.current.momentumFrame =
+        window.requestAnimationFrame(glide);
+    };
+
+    rankingDragRef.current.momentumFrame = window.requestAnimationFrame(glide);
+  };
+
+  useEffect(() => {
+    const list = rankingListRef.current;
+    if (!list) return;
+
+    list.scrollTo({ left: 0 });
+    const frame = window.requestAnimationFrame(updateRankingScrollState);
+    window.addEventListener("resize", updateRankingScrollState);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateRankingScrollState);
+    };
+  }, [rankingPeriod, topBorrowedBooks.length, updateRankingScrollState]);
+
+  useEffect(
+    () => () => {
+      stopRankingMomentum();
+    },
+    [stopRankingMomentum],
+  );
 
   const updateRankingBookSnapshot = (updatedBook: Book) => {
     setTopBorrowedByPeriod((prev) => {
@@ -242,6 +386,7 @@ export default function Dashboard({
             ? {
                 ...book,
                 title: updatedBook.title,
+                coverUrl: updatedBook.coverUrl,
                 category: updatedBook.category,
                 totalCopies: updatedBook.totalCopies,
                 activeLoans: updatedBook.loanedCopies,
@@ -543,6 +688,10 @@ export default function Dashboard({
           <h1 className="page-title">{t("inventoryTitle")}</h1>
         </div>
         <div className={styles.headerBadges}>
+          <Link href="/" className={styles.catalogLink}>
+            <Icon name="menu_book" />
+            {t("bookCatalogNav")}
+          </Link>
           <span className={`badge ${styles.badgeReset}`}>
             {t("activeLoansLabel")}: {initialLoans.length}
           </span>
@@ -561,23 +710,49 @@ export default function Dashboard({
           </div>
 
           <div className={styles.rankingControl}>
-            <label className={`form-label ${styles.sortLabel}`}>
-              {t("topBorrowedPeriod")}
-            </label>
-            <CustomSelect
-              buttonClassName={`form-input ${styles.rankingSelect}`}
-              value={rankingPeriod}
-              onChange={(value) => {
-                setRankingError("");
-                setIsRankingExpanded(false);
-                setRankingPeriod(value as ReportPeriod);
-              }}
-              ariaLabel={t("topBorrowedPeriod")}
-              options={REPORT_PERIOD_OPTIONS.map((period) => ({
-                value: period,
-                label: getReportPeriodLabel(period),
-              }))}
-            />
+            <div className={styles.rankingPeriodControl}>
+              <label className={`form-label ${styles.sortLabel}`}>
+                {t("topBorrowedPeriod")}
+              </label>
+              <CustomSelect
+                buttonClassName={`form-input ${styles.rankingSelect}`}
+                value={rankingPeriod}
+                onChange={(value) => {
+                  setRankingError("");
+                  setRankingPeriod(value as ReportPeriod);
+                }}
+                ariaLabel={t("topBorrowedPeriod")}
+                options={REPORT_PERIOD_OPTIONS.map((period) => ({
+                  value: period,
+                  label: getReportPeriodLabel(period),
+                }))}
+              />
+            </div>
+
+            {!isRankingLoading && topBorrowedBooks.length > 0 ? (
+              <div className={styles.rankingNavControls}>
+                <button
+                  type="button"
+                  className={styles.rankingNavButton}
+                  onClick={() => scrollRanking("prev")}
+                  disabled={!rankingScrollState.canScrollPrev}
+                  aria-label={t("topBorrowedPrevious")}
+                  title={t("topBorrowedPrevious")}
+                >
+                  <Icon name="chevron_left" />
+                </button>
+                <button
+                  type="button"
+                  className={styles.rankingNavButton}
+                  onClick={() => scrollRanking("next")}
+                  disabled={!rankingScrollState.canScrollNext}
+                  aria-label={t("topBorrowedNext")}
+                  title={t("topBorrowedNext")}
+                >
+                  <Icon name="chevron_right" />
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -590,69 +765,61 @@ export default function Dashboard({
             {t("topBorrowedLoading")}
           </div>
         ) : topBorrowedBooks.length > 0 ? (
-          <>
-            <ol className={styles.rankingList}>
-              {visibleTopBorrowedBooks.map((book) => {
-                const editableBook = books.find((item) => item.isbn === book.isbn);
-
-                return (
-                  <li key={book.isbn} className={styles.rankingItem}>
-                    <div className={styles.rankingRank}>#{book.rank}</div>
-                    <div className={styles.rankingBookInfo}>
-                      <div className={styles.rankingBookTop}>
-                        <h3 className={styles.rankingBookTitle}>{book.title}</h3>
-                        {book.category ? (
-                          <span className={`badge ${styles.neutralBadge}`}>
-                            {book.category}
-                          </span>
-                        ) : null}
+          <div className={styles.rankingCarousel}>
+            <ol
+              ref={rankingListRef}
+              className={`${styles.rankingList} ${
+                isRankingDragging ? styles.rankingListDragging : ""
+              }`}
+              onScroll={updateRankingScrollState}
+              onPointerDown={handleRankingPointerDown}
+              onPointerMove={handleRankingPointerMove}
+              onPointerUp={handleRankingPointerEnd}
+              onPointerCancel={handleRankingPointerEnd}
+              onLostPointerCapture={handleRankingPointerEnd}
+              onDragStart={(event) => event.preventDefault()}
+            >
+              {topBorrowedBooks.map((book) => (
+                <li key={book.isbn} className={styles.rankingItem}>
+                  <div className={styles.rankingRank}>{book.rank}</div>
+                  <div className={styles.rankingCoverArea}>
+                    {book.coverUrl ? (
+                      <div className={styles.rankingCoverFrame}>
+                        <Image
+                          src={book.coverUrl}
+                          alt={t("coverImage")}
+                          fill
+                          unoptimized
+                          className={styles.rankingCoverImage}
+                        />
                       </div>
-                      <p className={styles.rankingBookMeta}>ISBN: {book.isbn}</p>
-                      <div className={styles.rankingStats}>
-                        <span>
-                          <b>{book.totalLoans}</b> {t("topBorrowedTotalLoans")}
-                        </span>
-                        <span>
-                          {t("topBorrowedLastBorrowed")}:{" "}
-                          <b>{formatReportDate(book.lastBorrowedAt)}</b>
-                        </span>
-                        <span>
-                          {t("topBorrowedTotalCopies")}:{" "}
-                          <b>{book.totalCopies}</b>
-                        </span>
-                        <span>
-                          {t("topBorrowedActiveLoans")}:{" "}
-                          <b>{book.activeLoans}</b>
-                        </span>
+                    ) : (
+                      <div className={styles.rankingNoCover}>
+                        {t("noCover")}
                       </div>
+                    )}
+                  </div>
+                  <div className={styles.rankingBookInfo}>
+                    <div className={styles.rankingBookTop}>
+                      <h3 className={styles.rankingBookTitle}>{book.title}</h3>
+                      {book.category ? (
+                        <span
+                          className={`badge ${styles.neutralBadge} ${styles.rankingCategoryBadge}`}
+                        >
+                          {book.category}
+                        </span>
+                      ) : null}
                     </div>
-                    <button
-                      type="button"
-                      className={`${styles.cardIconButton} ${styles.rankingEditButton}`}
-                      onClick={() => editableBook && handleEditClick(editableBook)}
-                      disabled={!editableBook}
-                      title={t("topBorrowedEditBook")}
-                      aria-label={`${t("topBorrowedEditBook")}: ${book.title}`}
-                    >
-                      <Icon name="edit" />
-                    </button>
-                  </li>
-                );
-              })}
+                    <div className={styles.rankingStats}>
+                      <span>
+                        <b>{book.totalLoans}</b> {t("topBorrowedTotalLoans")}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              ))}
             </ol>
-
-            {hasHiddenRankingItems ? (
-              <button
-                type="button"
-                className={styles.rankingToggleButton}
-                onClick={() => setIsRankingExpanded((prev) => !prev)}
-              >
-                {isRankingExpanded
-                  ? t("topBorrowedShowLess")
-                  : t("topBorrowedShowMore")}
-              </button>
-            ) : null}
-          </>
+          </div>
         ) : (
           <div className={styles.rankingEmpty}>{t("topBorrowedEmpty")}</div>
         )}

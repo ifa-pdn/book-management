@@ -184,7 +184,9 @@ export default function PublicCatalogClient({
               </div>
 
               <div className={styles.bookInfo}>
-                <div className={styles.bookTitle}>{book.title}</div>
+                <div className={styles.bookTitle} title={book.title}>
+                  {book.title}
+                </div>
                 <div className={styles.bookMeta}>
                   {book.author} • {book.publisher}
                 </div>
