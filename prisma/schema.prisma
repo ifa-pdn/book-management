@@ -37,7 +37,7 @@ model BookCopy {
   isbn         String
   book         Book     @relation(fields: [isbn], references: [isbn])
   
-  uniqueCode   String   @unique // e.g. "AUC-De30-1"
+  uniqueCode   String   @unique // e.g. "LEN-De30-1"
   copyNumber   Int      // e.g. 1
   
   location     String?

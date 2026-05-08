@@ -11,6 +11,7 @@ import { dictionary, useI18n } from "../../../../contexts/I18nContext";
 import type { AdminCatalogBook } from "../../../../lib/bookCatalog";
 import type { AdminLoan } from "../../../../lib/adminLoans";
 import { getBorrowerClassLabel } from "../../../../lib/borrowerClassLabel";
+import { getDisplayCopyCode, normalizeCopyCode } from "../../../../lib/copyCode";
 import type { DerivedLoanStatus } from "../../../../lib/loanStatus";
 import CopyQrScanner from "./CopyQrScanner";
 import styles from "./LoanStationPage.module.css";
@@ -69,12 +70,6 @@ const createDefaultReturnForm = (): ReturnForm => ({
   returnNotes: "",
 });
 
-const normalizeCopySearchCode = (value: string) =>
-  value.trim().replace(/^AUC-/i, "").toUpperCase();
-
-const displayCopyCode = (value: string) =>
-  value.trim().replace(/^AUC-/i, "").toUpperCase();
-
 const extractCopyCodeFromQrValue = (value: string) => {
   const trimmedValue = value.trim();
   if (!trimmedValue) return "";
@@ -90,14 +85,14 @@ const extractCopyCodeFromQrValue = (value: string) => {
         ? pathSegments[copySegmentIndex + 1]
         : pathSegments[pathSegments.length - 1];
 
-    return displayCopyCode(decodeURIComponent(copyCode ?? ""));
+    return getDisplayCopyCode(decodeURIComponent(copyCode ?? ""));
   } catch {
     const copyPathMatch = trimmedValue.match(/\/copy\/([^/?#]+)/i);
     if (copyPathMatch?.[1]) {
-      return displayCopyCode(decodeURIComponent(copyPathMatch[1]));
+      return getDisplayCopyCode(decodeURIComponent(copyPathMatch[1]));
     }
 
-    return displayCopyCode(trimmedValue);
+    return getDisplayCopyCode(trimmedValue);
   }
 };
 
@@ -128,7 +123,7 @@ export default function LoanStationPage({
     useState<AdminLoan[]>(initialActiveLoans);
   const [stationMode, setStationMode] = useState<StationMode>(initialMode);
   const [loanCopySearch, setLoanCopySearch] = useState(
-    displayCopyCode(initialCopyCode),
+    getDisplayCopyCode(initialCopyCode),
   );
   const [loanForm, setLoanForm] = useState<LoanForm>(createDefaultLoanForm);
   const [returnForm, setReturnForm] = useState<ReturnForm>(
@@ -158,12 +153,12 @@ export default function LoanStationPage({
   );
 
   const matchedLoanCopy = useMemo(() => {
-    const searchCode = normalizeCopySearchCode(loanCopySearch);
+    const searchCode = normalizeCopyCode(loanCopySearch);
     if (!searchCode) return null;
 
     return (
       loanCopyOptions.find(
-        (copy) => normalizeCopySearchCode(copy.uniqueCode) === searchCode,
+        (copy) => normalizeCopyCode(copy.uniqueCode) === searchCode,
       ) ?? null
     );
   }, [loanCopyOptions, loanCopySearch]);
@@ -173,12 +168,12 @@ export default function LoanStationPage({
   const selectedReturnLoan = matchedLoanCopy
     ? activeLoans.find(
         (loan) =>
-          normalizeCopySearchCode(loan.uniqueCode) ===
-          normalizeCopySearchCode(matchedLoanCopy.uniqueCode),
+          normalizeCopyCode(loan.uniqueCode) ===
+          normalizeCopyCode(matchedLoanCopy.uniqueCode),
       ) ?? null
     : null;
   const loanCopyNotFound =
-    normalizeCopySearchCode(loanCopySearch).length > 0 && !matchedLoanCopy;
+    normalizeCopyCode(loanCopySearch).length > 0 && !matchedLoanCopy;
   const loanCopyUnavailable =
     Boolean(matchedLoanCopy) && matchedLoanCopy?.derivedStatus !== "available";
   const returnCopyUnavailable =

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
+import { createCopyCode } from "../../../lib/copyCode";
 import { isAdminSession, requireAdmin, requireLogin } from "../../../lib/auth";
 import {
   getAdminCatalogBooks,
@@ -94,8 +95,11 @@ export async function POST(request: Request) {
     let nextCopyNumber = (lastCopy?.copyNumber || 0) + 1;
 
     for (let i = 0; i < count; i++) {
-        // e.g. "AUC-De30-1"
-        const uniqueCode = `AUC-${book.categoryCode}${book.categorySeq}-${nextCopyNumber}`;
+        const uniqueCode = createCopyCode(
+          book.categoryCode,
+          book.categorySeq,
+          nextCopyNumber,
+        );
         copiesToCreate.push({
             isbn,
             copyNumber: nextCopyNumber,

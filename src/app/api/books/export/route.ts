@@ -111,11 +111,11 @@ export async function GET(request: Request) {
 
     const csvContent = "\uFEFF" + rows.join("\n"); 
     
-    // Custom filename format: YYYYMMDDHHmm_books_auc.csv
+    // Custom filename format: YYYYMMDDHHmm_books_lentra.csv
     const now = new Date();
     const pad = (n: number) => n.toString().padStart(2, '0');
     const timestamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}`;
-    const filename = `${timestamp}_books_auc.csv`;
+    const filename = `${timestamp}_books_lentra.csv`;
 
     return new NextResponse(csvContent, {
       headers: {

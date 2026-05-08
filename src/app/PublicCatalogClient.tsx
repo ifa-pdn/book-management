@@ -29,7 +29,7 @@ const catalogSortOptions = [
   "stock_asc",
   "category",
 ] as const;
-const publicCatalogSortStorageKey = "auc-books:public-catalog-sort";
+const publicCatalogSortStorageKey = "lentra:public-catalog-sort";
 
 type CatalogSort = (typeof catalogSortOptions)[number];
 
@@ -97,7 +97,7 @@ export default function PublicCatalogClient({
     <div>
       <div className={styles.pageHeader}>
         <div>
-          <h1 className="page-title">AUC Books</h1>
+          <h1 className="page-title">Lentra</h1>
         </div>
         <div className={styles.pageActions}>
           <LanguageSwitcher />

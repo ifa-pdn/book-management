@@ -7,10 +7,9 @@ export const AUTH_COOKIE_NAME = "auth_token";
 export const ADMIN_COOKIE_NAME = AUTH_COOKIE_NAME;
 export const VIEWER_TOKEN_VALUE = "viewer";
 export const ADMIN_TOKEN_VALUE = "admin";
-const LEGACY_ADMIN_TOKEN_VALUE = "admin_token_secure_auc";
 
 export function getAuthRoleFromToken(token?: string | null): AuthRole | null {
-  if (token === ADMIN_TOKEN_VALUE || token === LEGACY_ADMIN_TOKEN_VALUE) {
+  if (token === ADMIN_TOKEN_VALUE) {
     return "admin";
   }
 

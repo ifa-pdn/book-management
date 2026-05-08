@@ -17,7 +17,7 @@ const getInitialLang = (): Lang => {
   if (typeof window === 'undefined') return defaultLang;
 
   try {
-    const savedLang = localStorage.getItem('auc-lang');
+    const savedLang = localStorage.getItem('lentra-lang');
     if (savedLang && ['id', 'en', 'ja'].includes(savedLang)) {
       return savedLang as Lang;
     }
@@ -39,7 +39,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const handleSetLang = (newLang: Lang) => {
     setLang(newLang);
     try {
-      localStorage.setItem('auc-lang', newLang);
+      localStorage.setItem('lentra-lang', newLang);
     } catch (error) {
       console.error("Local storage access failed", error);
     }

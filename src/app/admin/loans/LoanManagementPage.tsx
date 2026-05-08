@@ -9,6 +9,7 @@ import Icon from "../../../components/Icon";
 import type { AdminCatalogBook } from "../../../lib/bookCatalog";
 import type { AdminLoan } from "../../../lib/adminLoans";
 import { getBorrowerClassLabel } from "../../../lib/borrowerClassLabel";
+import { normalizeCopyCode } from "../../../lib/copyCode";
 import { usePersistentStringOption } from "../../../lib/usePersistentStringOption";
 import styles from "./LoanManagementPage.module.css";
 
@@ -50,7 +51,7 @@ const activeLoanSortOptions: ActiveLoanSort[] = [
   "title_asc",
 ];
 
-const activeLoanSortStorageKey = "auc-books:active-loans-sort";
+const activeLoanSortStorageKey = "lentra:active-loans-sort";
 
 const pad = (value: number) => String(value).padStart(2, "0");
 
@@ -62,9 +63,6 @@ const getDefaultDueDate = () => {
   date.setDate(date.getDate() + 1);
   return toDateInputValue(date);
 };
-
-const normalizeCopySearchCode = (value: string) =>
-  value.trim().replace(/^AUC-/i, "").toUpperCase();
 
 const getDateTime = (value: string | null | undefined) => {
   if (!value) return 0;
@@ -177,12 +175,12 @@ export default function LoanManagementPage({
   );
 
   const matchedLoanCopy = useMemo(() => {
-    const searchCode = normalizeCopySearchCode(loanCopySearch);
+    const searchCode = normalizeCopyCode(loanCopySearch);
     if (!searchCode) return null;
 
     return (
       loanCopyOptions.find(
-        (copy) => normalizeCopySearchCode(copy.uniqueCode) === searchCode,
+        (copy) => normalizeCopyCode(copy.uniqueCode) === searchCode,
       ) ?? null
     );
   }, [loanCopyOptions, loanCopySearch]);
@@ -190,7 +188,7 @@ export default function LoanManagementPage({
   const selectedAvailableLoanCopy =
     matchedLoanCopy?.derivedStatus === "available" ? matchedLoanCopy : null;
   const loanCopyNotFound =
-    normalizeCopySearchCode(loanCopySearch).length > 0 && !matchedLoanCopy;
+    normalizeCopyCode(loanCopySearch).length > 0 && !matchedLoanCopy;
   const loanCopyUnavailable =
     Boolean(matchedLoanCopy) && matchedLoanCopy?.derivedStatus !== "available";
 

@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Book Management System",
-  description: "Advanced book inventory with ISBN auto-fetch and unique SKU generation.",
+  title: "Lentra",
+  description: "Internal book catalog, inventory, lending, and QR label management.",
 };
 
 export default function RootLayout({

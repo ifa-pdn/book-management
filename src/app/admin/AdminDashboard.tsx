@@ -13,6 +13,7 @@ import Icon from "../../components/Icon";
 import type { AdminCatalogBook } from "../../lib/bookCatalog";
 import type { AdminLoan } from "../../lib/adminLoans";
 import type { ReportPeriod, TopBorrowedBook } from "../../lib/loanReports";
+import { getDisplayCopyCode } from "../../lib/copyCode";
 import { usePersistentStringOption } from "../../lib/usePersistentStringOption";
 import styles from "./AdminDashboard.module.css";
 
@@ -35,7 +36,7 @@ const catalogSortOptions = [
   "stock_asc",
   "category",
 ] as const;
-const adminCatalogSortStorageKey = "auc-books:admin-catalog-sort";
+const adminCatalogSortStorageKey = "lentra:admin-catalog-sort";
 
 type CatalogSort = (typeof catalogSortOptions)[number];
 type TranslationMap = typeof dictionary.id;
@@ -1653,10 +1654,10 @@ function PrintableLabels({ copies }: PrintableLabelsProps) {
           />
           <div className={styles.labelText}>
             <div className={styles.labelBrand}>
-              AUC
+              Lentra
             </div>
             <div className={styles.labelCode}>
-              {copy.uniqueCode.split("-").slice(1).join("-")}
+              {getDisplayCopyCode(copy.uniqueCode)}
             </div>
           </div>
         </div>

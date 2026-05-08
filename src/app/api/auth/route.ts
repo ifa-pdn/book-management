@@ -12,9 +12,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { password } = body;
 
-    const adminPassword = process.env.ADMIN_PASSWORD || "auc2700";
+    const adminPassword = process.env.ADMIN_PASSWORD || "lentra2700";
     const viewerPasscode =
-      process.env.COMPANY_PASSCODE || process.env.VIEWER_PASSWORD || "aucbooks";
+      process.env.COMPANY_PASSCODE || process.env.VIEWER_PASSWORD || "lentrabooks";
     let role: AuthRole | null = null;
 
     if (password === adminPassword) {

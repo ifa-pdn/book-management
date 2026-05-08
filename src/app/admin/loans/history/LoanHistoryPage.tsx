@@ -29,7 +29,7 @@ const sortOptions: HistorySort[] = [
   "title_asc",
 ];
 
-const historySortStorageKey = "auc-books:loan-history-sort";
+const historySortStorageKey = "lentra:loan-history-sort";
 
 type NoteDraft = {
   borrowNotes: string;

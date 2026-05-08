@@ -23,7 +23,7 @@ export default function Sidebar() {
 
   return (
     <header className={styles.topHeader}>
-      <div className={styles.topHeaderBrand}>AUC Books</div>
+      <div className={styles.topHeaderBrand}>Lentra</div>
       <div className={styles.topHeaderSpacer} />
 
       <div className={styles.topHeaderDesktop}>
