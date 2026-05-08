@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../lib/prisma";
 import { createCopyCode } from "../../../lib/copyCode";
+import { deleteStoredCoverFile } from "../../../lib/coverStorage";
 import { isAdminSession, requireAdmin, requireLogin } from "../../../lib/auth";
 import {
   getAdminCatalogBooks,
@@ -31,6 +32,31 @@ type BookPayload = {
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
+const categoryCodeMap: Record<string, string> = {
+  Desain: "De",
+  IT: "It",
+  Manajemen: "Mn",
+  Novel: "Nv",
+  Bisnis: "Bs",
+  Kamus: "Km",
+};
+
+const getCategoryCode = (category?: string | null) =>
+  (category && categoryCodeMap[category]) ||
+  (category ? category.substring(0, 2).toUpperCase() : "XX");
+
+const deleteCoverFileIfUnused = async (coverUrl?: string | null) => {
+  if (!coverUrl) return;
+
+  const remainingReferences = await prisma.book.count({
+    where: { coverUrl },
+  });
+
+  if (remainingReferences === 0) {
+    await deleteStoredCoverFile(coverUrl);
+  }
+};
+
 export async function POST(request: Request) {
   try {
     const authError = await requireAdmin();
@@ -46,17 +72,7 @@ export async function POST(request: Request) {
     // Logic: Check if Book already exists
     let book = await prisma.book.findUnique({ where: { isbn } });
     
-    // Category mapping logic
-    const catCodeMap: Record<string, string> = {
-      "Desain": "De",
-      "IT": "It",
-      "Manajemen": "Mn",
-      "Novel": "Nv",
-      "Bisnis": "Bs",
-      "Kamus": "Km"
-    };
-    
-    const categoryCode = (category && catCodeMap[category]) || (category ? category.substring(0, 2).toUpperCase() : "XX");
+    const categoryCode = getCategoryCode(category);
 
     if (!book) {
       // Find the latest categorySeq for this categoryCode
@@ -143,8 +159,58 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "ISBN is required" }, { status: 400 });
     }
 
-    const [updatedBook] = await prisma.$transaction([
-      prisma.book.update({
+    const currentBook = await prisma.book.findUnique({
+      where: { isbn },
+      include: {
+        copies: {
+          orderBy: { copyNumber: "asc" },
+          select: {
+            uniqueCode: true,
+            copyNumber: true,
+            location: true,
+            condition: true,
+          },
+        },
+      },
+    });
+
+    if (!currentBook) {
+      return NextResponse.json({ error: "Book not found" }, { status: 404 });
+    }
+
+    const nextCategory = category ?? currentBook.category;
+    const nextCategoryCode = getCategoryCode(nextCategory);
+    const currentCategoryCode =
+      currentBook.categoryCode ?? getCategoryCode(currentBook.category);
+    const shouldRegenerateCopyCodes =
+      nextCategoryCode !== currentCategoryCode || currentBook.categorySeq == null;
+    const copyUpdates = new Map(
+      copies.map((copy) => [
+        copy.uniqueCode,
+        {
+          location: copy.location,
+          condition: copy.condition,
+        },
+      ]),
+    );
+
+    const updatedBook = await prisma.$transaction(async (tx) => {
+      const nextCategorySeq = shouldRegenerateCopyCodes
+        ? (
+            (
+              await tx.book.findFirst({
+                where: {
+                  categoryCode: nextCategoryCode,
+                  NOT: { isbn },
+                },
+                orderBy: { categorySeq: "desc" },
+                select: { categorySeq: true },
+              })
+            )?.categorySeq ?? 0
+          ) + 1
+        : (currentBook.categorySeq ?? 1);
+
+      const book = await tx.book.update({
         where: { isbn },
         data: {
           title,
@@ -155,19 +221,33 @@ export async function PUT(request: Request) {
           edition,
           printing,
           size,
-          category,
+          category: nextCategory,
+          categoryCode: nextCategoryCode,
+          categorySeq: nextCategorySeq,
         },
-      }),
-      ...copies.map((copy) =>
-        prisma.bookCopy.update({
+      });
+
+      for (const copy of currentBook.copies) {
+        const copyEdit = copyUpdates.get(copy.uniqueCode);
+
+        await tx.bookCopy.update({
           where: { uniqueCode: copy.uniqueCode },
           data: {
-            location: copy.location,
-            condition: copy.condition,
+            uniqueCode: shouldRegenerateCopyCodes
+              ? createCopyCode(
+                  nextCategoryCode,
+                  nextCategorySeq,
+                  copy.copyNumber,
+                )
+              : copy.uniqueCode,
+            location: copyEdit?.location ?? copy.location,
+            condition: copyEdit?.condition ?? copy.condition,
           },
-        }),
-      ),
-    ]);
+        });
+      }
+
+      return book;
+    });
 
     const updatedBookWithCopies = (await getAdminCatalogBooks()).find(
       (book) => book.isbn === isbn,
@@ -192,7 +272,15 @@ export async function DELETE(request: Request) {
       if (copyId) {
           const copy = await prisma.bookCopy.findUnique({
             where: { uniqueCode: copyId },
-            select: { id: true, isbn: true },
+            select: {
+              id: true,
+              isbn: true,
+              book: {
+                select: {
+                  coverUrl: true,
+                },
+              },
+            },
           });
 
           if (!copy) {
@@ -217,6 +305,8 @@ export async function DELETE(request: Request) {
           });
 
           if (deletedBook) {
+            await deleteCoverFileIfUnused(copy.book.coverUrl);
+
             return NextResponse.json({
               success: true,
               deletedBook: true,
@@ -242,7 +332,7 @@ export async function DELETE(request: Request) {
       if (isbn) {
           const book = await prisma.book.findUnique({
             where: { isbn },
-            select: { isbn: true },
+            select: { isbn: true, coverUrl: true },
           });
 
           if (!book) {
@@ -272,6 +362,8 @@ export async function DELETE(request: Request) {
             await tx.bookCopy.deleteMany({ where: { isbn } });
             await tx.book.delete({ where: { isbn } });
           });
+
+          await deleteCoverFileIfUnused(book.coverUrl);
 
           return NextResponse.json({
             success: true,
