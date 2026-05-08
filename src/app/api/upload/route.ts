@@ -3,7 +3,11 @@ import { writeFile, mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import crypto from 'crypto';
+import { head, put } from '@vercel/blob';
 import { requireAdmin } from '../../../lib/auth';
+
+const isBlobNotFoundError = (error: unknown) =>
+  error instanceof Error && error.name === 'BlobNotFoundError';
 
 export async function POST(request: Request) {
   try {
@@ -27,6 +31,35 @@ export async function POST(request: Request) {
 
     // 2. Define the new file name using the hash + webp extension (since we will enforce webp from client)
     const finalName = `${hexHash}.webp`;
+    const blobPathname = `uploads/${finalName}`;
+
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const existingBlob = await head(blobPathname);
+
+        return NextResponse.json({
+          success: true,
+          url: existingBlob.url,
+          deduplicated: true,
+        });
+      } catch (error) {
+        if (!isBlobNotFoundError(error)) {
+          throw error;
+        }
+      }
+
+      const blob = await put(blobPathname, buffer, {
+        access: 'public',
+        contentType: 'image/webp',
+      });
+
+      return NextResponse.json({
+        success: true,
+        url: blob.url,
+        deduplicated: false,
+      });
+    }
+
     const uploadDir = join(process.cwd(), 'public', 'uploads');
     const filepath = join(uploadDir, finalName);
     

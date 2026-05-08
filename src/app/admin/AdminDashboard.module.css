@@ -1,18 +1,18 @@
 .dashboardTheme {
-  --dashboard-base: #8ecae6;
-  --dashboard-base-soft: rgba(142, 202, 230, 0.18);
-  --dashboard-base-panel: rgba(142, 202, 230, 0.12);
-  --dashboard-secondary: #219ebc;
-  --dashboard-secondary-soft: rgba(33, 158, 188, 0.14);
-  --dashboard-ink: #023047;
-  --dashboard-ink-muted: rgba(2, 48, 71, 0.68);
-  --dashboard-accent: #ffb703;
-  --dashboard-accent-soft: rgba(255, 183, 3, 0.2);
-  --dashboard-accent-text: #7a5400;
-  --dashboard-danger: #c43d1f;
-  --dashboard-danger-soft: rgba(196, 61, 31, 0.12);
-  --dashboard-success: #2f8f4e;
-  --dashboard-success-soft: rgba(47, 143, 78, 0.13);
+  --dashboard-base: #a0c4c4;
+  --dashboard-base-soft: rgba(160, 196, 196, 0.32);
+  --dashboard-base-panel: rgba(217, 223, 223, 0.55);
+  --dashboard-secondary: #002d42;
+  --dashboard-secondary-soft: rgba(0, 45, 66, 0.12);
+  --dashboard-ink: #002d42;
+  --dashboard-ink-muted: rgba(0, 45, 66, 0.68);
+  --dashboard-accent: #f2febc;
+  --dashboard-accent-soft: rgba(242, 254, 188, 0.72);
+  --dashboard-accent-text: #002d42;
+  --dashboard-danger: #b91c1c;
+  --dashboard-danger-soft: rgba(185, 28, 28, 0.11);
+  --dashboard-success: #15803d;
+  --dashboard-success-soft: rgba(21, 128, 61, 0.12);
   color: var(--dashboard-ink);
 }
 
@@ -25,13 +25,13 @@
 }
 
 .dashboardTheme :global(.form-input) {
-  border-color: rgba(33, 158, 188, 0.24);
+  border-color: rgba(0, 45, 66, 0.22);
   color: var(--dashboard-ink);
 }
 
 .dashboardTheme :global(.form-input):focus {
   border-color: var(--dashboard-secondary);
-  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+  box-shadow: 0 0 0 3px rgba(0, 45, 66, 0.12);
 }
 
 .dashboardTheme :global(.btn-primary) {
@@ -40,7 +40,8 @@
 }
 
 .dashboardTheme :global(.btn-primary:hover) {
-  background: var(--dashboard-ink);
+  background: var(--dashboard-accent);
+  color: var(--dashboard-ink);
 }
 
 .dashboardTheme :global(.badge) {
@@ -108,7 +109,7 @@
 .catalogLink {
   align-items: center;
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 8px;
   color: var(--dashboard-secondary);
   display: inline-flex;
@@ -127,8 +128,8 @@
 
 .rankingPanel {
   background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(142, 202, 230, 0.46);
-  box-shadow: 0 14px 34px rgba(2, 48, 71, 0.055);
+  border-color: rgba(0, 45, 66, 0.2);
+  box-shadow: 0 14px 34px rgba(0, 45, 66, 0.055);
   margin-bottom: 2rem;
   padding: 1.25rem;
 }
@@ -172,7 +173,7 @@
 }
 
 .rankingSelect {
-  border-color: rgba(33, 158, 188, 0.24);
+  border-color: rgba(0, 45, 66, 0.22);
   color: var(--dashboard-ink);
   min-height: 42px;
   min-width: 150px;
@@ -227,7 +228,7 @@
   display: grid;
   gap: 0.8rem;
   grid-template-columns: 72px minmax(0, 1fr);
-  border: 1px solid rgba(142, 202, 230, 0.36);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   min-height: 122px;
@@ -259,7 +260,7 @@
 .rankingNoCover {
   align-items: center;
   background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   border-radius: 6px;
   color: var(--dashboard-ink-muted);
   display: flex;
@@ -339,9 +340,9 @@
 .rankingNavButton {
   align-items: center;
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 50%;
-  box-shadow: 0 10px 22px rgba(2, 48, 71, 0.08);
+  box-shadow: 0 10px 22px rgba(0, 45, 66, 0.08);
   color: var(--dashboard-ink);
   cursor: pointer;
   display: inline-flex;
@@ -400,19 +401,19 @@
   flex-direction: row-reverse;
   padding: 1.5rem;
   margin-bottom: 0;
-  background: rgba(142, 202, 230, 0.18);
-  border-color: rgba(142, 202, 230, 0.48);
-  box-shadow: 0 14px 34px rgba(2, 48, 71, 0.06);
+  background: var(--dashboard-base-soft);
+  border-color: rgba(0, 45, 66, 0.24);
+  box-shadow: 0 14px 34px rgba(0, 45, 66, 0.06);
 }
 
 .searchPanel :global(.form-input) {
-  border-color: rgba(33, 158, 188, 0.24);
+  border-color: rgba(0, 45, 66, 0.22);
   color: var(--dashboard-ink);
 }
 
 .searchPanel :global(.form-input):focus {
   border-color: var(--dashboard-secondary);
-  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+  box-shadow: 0 0 0 3px rgba(0, 45, 66, 0.12);
 }
 
 .searchIcon {
@@ -436,7 +437,7 @@
 
 .toolbarButton {
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.28);
+  border: 1px solid rgba(0, 45, 66, 0.26);
   padding: 0.8rem 1.5rem;
   color: var(--dashboard-ink);
   cursor: pointer;
@@ -454,14 +455,14 @@
 }
 
 .toolbarButtonActive:hover {
-  background: rgba(255, 183, 3, 0.82);
+  background: var(--dashboard-accent);
   border-color: var(--dashboard-accent);
   color: var(--dashboard-ink);
 }
 
 .toolbarLink {
   background: var(--dashboard-accent-soft);
-  border: 1px solid rgba(255, 183, 3, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.24);
   padding: 0.8rem 1.5rem;
   color: var(--dashboard-ink);
   text-decoration: none;
@@ -473,8 +474,8 @@
 
 .filterPanel {
   background: rgba(255, 255, 255, 0.82);
-  border-color: rgba(142, 202, 230, 0.46);
-  box-shadow: 0 14px 34px rgba(2, 48, 71, 0.055);
+  border-color: rgba(0, 45, 66, 0.2);
+  box-shadow: 0 14px 34px rgba(0, 45, 66, 0.055);
   margin-bottom: 2rem;
   padding: 1.2rem;
 }
@@ -525,7 +526,7 @@
 }
 
 .sortSelect {
-  border-color: rgba(33, 158, 188, 0.24);
+  border-color: rgba(0, 45, 66, 0.22);
   color: var(--dashboard-ink);
   padding: 0.5rem;
   font-size: 0.9rem;
@@ -538,7 +539,7 @@
   padding: 1rem;
   margin-bottom: 1rem;
   background: var(--dashboard-base-soft);
-  border: 1px solid rgba(142, 202, 230, 0.46);
+  border: 1px solid rgba(0, 45, 66, 0.2);
   gap: 1rem;
   flex-wrap: wrap;
 }
@@ -570,7 +571,7 @@
   padding: 0.45rem 0.75rem;
   border-radius: 9999px;
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.26);
+  border: 1px solid rgba(0, 45, 66, 0.24);
   cursor: pointer;
   color: var(--dashboard-ink);
 }
@@ -614,19 +615,19 @@
   background: rgba(255, 255, 255, 0.94);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 12px 28px rgba(2, 48, 71, 0.055);
+  box-shadow: 0 12px 28px rgba(0, 45, 66, 0.055);
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   transition: transform 0.2s;
   height: 100%;
 }
 
 .bookCard:hover {
   transform: translateY(-4px);
-  border-color: rgba(33, 158, 188, 0.42);
-  box-shadow: 0 16px 30px rgba(2, 48, 71, 0.09);
+  border-color: rgba(0, 45, 66, 0.36);
+  box-shadow: 0 16px 30px rgba(0, 45, 66, 0.09);
 }
 
 .bookMain {
@@ -689,7 +690,7 @@
 .noCover {
   width: 100%;
   height: 100%;
-  background: rgba(142, 202, 230, 0.2);
+  background: var(--dashboard-base-soft);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -782,7 +783,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 999px;
   background: #fff;
   color: var(--dashboard-secondary);
@@ -794,7 +795,7 @@
 }
 
 .copyToggleButton:hover {
-  border-color: rgba(33, 158, 188, 0.45);
+  border-color: rgba(0, 45, 66, 0.42);
   background: var(--dashboard-base-soft);
 }
 
@@ -803,7 +804,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.35rem;
-  border-bottom: 1px solid rgba(142, 202, 230, 0.28);
+  border-bottom: 1px solid rgba(0, 45, 66, 0.14);
   padding-bottom: 0.3rem;
   width: 100%;
 }
@@ -836,7 +837,7 @@
 
 .cardIconButton {
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 50%;
   width: 32px;
   height: 32px;
@@ -846,7 +847,7 @@
   cursor: pointer;
   font-size: 0.9rem;
   color: var(--dashboard-ink);
-  box-shadow: 0 8px 18px rgba(2, 48, 71, 0.055);
+  box-shadow: 0 8px 18px rgba(0, 45, 66, 0.055);
 }
 
 .cardIconButton:hover {
@@ -952,7 +953,7 @@
   text-align: center;
   display: block;
   cursor: pointer;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   color: var(--dashboard-ink);
 }
 
@@ -1002,7 +1003,7 @@
   background: var(--dashboard-base-panel);
   padding: 0.3rem;
   border-radius: 8px;
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
 }
 
 .counterSmallButton {
@@ -1026,7 +1027,7 @@
 }
 
 .editCopyCard {
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   border-radius: 10px;
   padding: 0.9rem;
   background: var(--dashboard-base-panel);
@@ -1060,7 +1061,7 @@
 }
 
 .reviewBookCard {
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   border-radius: 12px;
   padding: 1rem;
   background: #fff;
@@ -1086,7 +1087,7 @@
   padding: 0.8rem 0.9rem;
   border-radius: 10px;
   background: var(--dashboard-base-panel);
-  border: 1px solid rgba(142, 202, 230, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.18);
   cursor: pointer;
 }
 
@@ -1199,7 +1200,7 @@
 .labelContainer {
   min-width: 3.6cm;
   padding: 5px;
-  border: 1px solid rgba(142, 202, 230, 0.5);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   display: flex;
   flex-direction: row;
   align-items: center;

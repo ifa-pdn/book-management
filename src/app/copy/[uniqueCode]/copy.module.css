@@ -25,7 +25,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 8px;
   background: #fff;
   color: var(--primary);
@@ -131,7 +131,7 @@
 
 .borrowNotice {
   background: var(--dashboard-accent-soft);
-  border: 1px solid rgba(255, 183, 3, 0.38);
+  border: 1px solid rgba(0, 45, 66, 0.24);
   border-radius: 10px;
   color: var(--accent-yellow-text);
   font-size: 0.9rem;
@@ -151,7 +151,7 @@
   border-radius: 8px;
   font-size: 0.95rem;
   border: 1px solid var(--panel-border);
-  box-shadow: 0 12px 28px rgba(2, 48, 71, 0.055);
+  box-shadow: 0 12px 28px rgba(0, 45, 66, 0.055);
 }
 
 .statusRow,
@@ -163,7 +163,7 @@
 .statusRowSeparated {
   margin-bottom: 0.8rem;
   padding-bottom: 0.8rem;
-  border-bottom: 1px dashed rgba(142, 202, 230, 0.5);
+  border-bottom: 1px dashed rgba(0, 45, 66, 0.22);
 }
 
 .statusLabel {
@@ -304,7 +304,7 @@
   padding: 2rem;
   background: var(--accent-blue-soft);
   border-radius: 12px;
-  border: 1px dashed rgba(33, 158, 188, 0.35);
+  border: 1px dashed rgba(0, 45, 66, 0.32);
 }
 
 .guestTitle {
@@ -344,7 +344,7 @@
   width: 100%;
   padding: 0.8rem;
   background: transparent;
-  border: 1px solid rgba(33, 158, 188, 0.28);
+  border: 1px solid rgba(0, 45, 66, 0.26);
   color: var(--text-main);
 }
 

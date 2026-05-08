@@ -14,14 +14,14 @@
 .backLink {
   gap: 0.5rem;
   background: #fff;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   color: var(--primary);
   text-decoration: none;
 }
 
 .backLink:hover {
   background: var(--accent-blue-soft);
-  border-color: rgba(33, 158, 188, 0.42);
+  border-color: rgba(0, 45, 66, 0.36);
 }
 
 .historyLayout {
@@ -69,7 +69,7 @@
 }
 
 .filterButton {
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 999px;
   background: #fff;
   color: var(--text-muted);
@@ -162,13 +162,13 @@
 .errorNotice {
   color: var(--accent-red);
   background: var(--accent-red-soft);
-  border: 1px solid rgba(196, 61, 31, 0.24);
+  border: 1px solid rgba(185, 28, 28, 0.2);
 }
 
 .successNotice {
   color: var(--accent-green);
   background: var(--accent-green-soft);
-  border: 1px solid rgba(47, 143, 78, 0.24);
+  border: 1px solid rgba(21, 128, 61, 0.2);
 }
 
 .cardHeader {
@@ -297,7 +297,7 @@
 
 .emptyState {
   color: var(--text-muted);
-  border: 1px dashed rgba(33, 158, 188, 0.35);
+  border: 1px dashed rgba(0, 45, 66, 0.32);
   border-radius: 8px;
   padding: 1rem;
   text-align: center;

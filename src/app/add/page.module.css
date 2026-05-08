@@ -20,7 +20,7 @@
 }
 
 .scanButton {
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   background: #fff;
   color: var(--primary);
   gap: 0.45rem;
@@ -52,7 +52,7 @@
 }
 
 .scannerCloseButton {
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   background: #fff;
   color: var(--primary);
   gap: 0.35rem;
@@ -81,7 +81,7 @@
   inset: 28% 10%;
   border: 2px solid rgba(255, 255, 255, 0.86);
   border-radius: 10px;
-  box-shadow: 0 0 0 999px rgba(2, 48, 71, 0.28);
+  box-shadow: 0 0 0 999px rgba(0, 45, 66, 0.28);
   pointer-events: none;
 }
 
@@ -173,7 +173,7 @@
 
 .counterButton {
   padding: 0.3rem 0.6rem;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   background: #fff;
 }
 
@@ -206,7 +206,7 @@
 .coverPreview {
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 24px rgba(2, 48, 71, 0.1);
+  box-shadow: 0 10px 24px rgba(0, 45, 66, 0.1);
 }
 
 .coverImage {
@@ -232,7 +232,7 @@
 
 .uploadButton {
   width: 100%;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   font-size: 0.9rem;
 }
 

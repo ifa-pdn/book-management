@@ -1,21 +1,34 @@
 :root {
-  --bg-color: #f5fbfd;
-  --panel-bg: rgba(255, 255, 255, 0.82);
-  --panel-border: rgba(142, 202, 230, 0.38);
-  --primary: #219ebc;
-  --primary-hover: #023047;
-  --text-main: #023047;
-  --text-muted: rgba(2, 48, 71, 0.68);
-  --accent-blue: #8ecae6;
-  --accent-blue-soft: rgba(142, 202, 230, 0.18);
-  --accent-yellow: #ffb703;
-  --accent-yellow-soft: rgba(255, 183, 3, 0.18);
-  --accent-yellow-text: #7a5400;
+  --depoly-beige: #d9daca;
+  --depoly-denim: #002d42;
+  --depoly-white: #ebebe1;
+  --depoly-greenish: #f2febc;
+  --depoly-sea: #a0c4c4;
+  --depoly-sky: #d9dfdf;
+  --depoly-stone: #aab6b6;
+  --depoly-earth: #cacfbb;
+  --depoly-natural: #b3bda4;
+
+  --bg-color: #ecece2;
+  --page-bg: var(--bg-color);
+  --panel-bg: rgba(235, 235, 225, 0.86);
+  --panel-border: rgba(0, 45, 66, 0.18);
+  --primary: var(--depoly-denim);
+  --primary-hover: var(--depoly-greenish);
+  --primary-hover-text: var(--depoly-denim);
+  --primary-contrast: var(--depoly-white);
+  --text-main: var(--depoly-denim);
+  --text-muted: rgba(0, 45, 66, 0.68);
+  --accent-blue: var(--depoly-sea);
+  --accent-blue-soft: rgba(160, 196, 196, 0.32);
+  --accent-yellow: var(--depoly-greenish);
+  --accent-yellow-soft: rgba(242, 254, 188, 0.72);
+  --accent-yellow-text: var(--depoly-denim);
   --dashboard-accent-soft: var(--accent-yellow-soft);
-  --accent-red: #c43d1f;
-  --accent-red-soft: rgba(196, 61, 31, 0.12);
-  --accent-green: #2f8f4e;
-  --accent-green-soft: rgba(47, 143, 78, 0.13);
+  --accent-red: #b91c1c;
+  --accent-red-soft: rgba(185, 28, 28, 0.11);
+  --accent-green: #15803d;
+  --accent-green-soft: rgba(21, 128, 61, 0.12);
 }
 
 * {
@@ -66,7 +79,7 @@ body {
   border: 1px solid var(--panel-border);
   border-radius: 16px;
   padding: 2rem;
-  box-shadow: 0 12px 32px rgba(2, 48, 71, 0.055);
+  box-shadow: 0 12px 32px rgba(0, 45, 66, 0.055);
 }
 
 /* Forms */
@@ -85,7 +98,7 @@ body {
 .form-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   border-radius: 8px;
   font-size: 1rem;
   transition: all 0.2s;
@@ -99,7 +112,7 @@ select.form-input {
   -moz-appearance: none;
   padding-left: 1rem;
   padding-right: 3rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23023047' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M6 8l4 4 4-4' stroke='%23002d42' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.5rem center;
   background-size: 1rem;
@@ -108,7 +121,7 @@ select.form-input {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(33, 158, 188, 0.12);
+  box-shadow: 0 0 0 3px rgba(0, 45, 66, 0.12);
 }
 
 .form-input[readOnly] {
@@ -133,11 +146,12 @@ select.form-input {
 
 .btn-primary {
   background: var(--primary);
-  color: white;
+  color: var(--primary-contrast);
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
+  color: var(--primary-hover-text);
   transform: translateY(-1px);
 }
 
@@ -147,7 +161,7 @@ select.form-input {
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  border: 1px solid rgba(33, 158, 188, 0.24);
+  border: 1px solid rgba(0, 45, 66, 0.22);
   background: white;
   color: var(--text-muted);
   transition: all 0.2s;
@@ -155,7 +169,7 @@ select.form-input {
 
 .tag.selected {
   background: var(--primary);
-  color: white;
+  color: var(--primary-contrast);
   border-color: var(--primary);
 }
 
