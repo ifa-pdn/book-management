@@ -16,6 +16,11 @@ type CreateLoanPayload = {
   borrowNotes?: string;
 };
 
+type LoanTransactionClient = {
+  bookCopy: typeof prisma.bookCopy;
+  loan: typeof prisma.loan;
+};
+
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 const borrowerClassOptions = new Set(["Kelas 1", "Kelas 2"]);
@@ -110,7 +115,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const loan = await prisma.$transaction(async (tx) => {
+    const loan = await prisma.$transaction(async (tx: LoanTransactionClient) => {
       const copy = await tx.bookCopy.findUnique({
         where: { id: bookCopyId },
         select: { id: true },
