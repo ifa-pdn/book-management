@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { createCopyCode } from "../../../lib/copyCode";
 import { deleteStoredCoverFile } from "../../../lib/coverStorage";
@@ -28,6 +27,12 @@ type BookPayload = {
     location?: string;
     condition?: string;
   }>;
+};
+
+type BookTransactionClient = {
+  book: typeof prisma.book;
+  bookCopy: typeof prisma.bookCopy;
+  loan: typeof prisma.loan;
 };
 
 const getErrorMessage = (error: unknown, fallback: string) =>
@@ -195,7 +200,7 @@ export async function PUT(request: Request) {
       ]),
     );
 
-    const updatedBook = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const updatedBook = await prisma.$transaction(async (tx: BookTransactionClient) => {
       const nextCategorySeq = shouldRegenerateCopyCodes
         ? (
             (
@@ -291,7 +296,7 @@ export async function DELETE(request: Request) {
             );
           }
 
-          const deletedBook = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+          const deletedBook = await prisma.$transaction(async (tx: BookTransactionClient) => {
             await tx.loan.deleteMany({ where: { bookCopyId: copy.id } });
             await tx.bookCopy.delete({ where: { uniqueCode: copyId } });
 
@@ -343,7 +348,7 @@ export async function DELETE(request: Request) {
             );
           }
 
-          await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+          await prisma.$transaction(async (tx: BookTransactionClient) => {
             const copies = await tx.bookCopy.findMany({
               where: { isbn },
               select: { id: true },
