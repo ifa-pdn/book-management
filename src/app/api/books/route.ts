@@ -4,6 +4,7 @@ import { createCopyCode } from "../../../lib/copyCode";
 import { deleteStoredCoverFile } from "../../../lib/coverStorage";
 import { isAdminSession, requireAdmin, requireLogin } from "../../../lib/auth";
 import {
+  type AdminCatalogBook,
   getAdminCatalogBooks,
   getPublicCatalogBooks,
 } from "../../../lib/bookCatalog";
@@ -191,7 +192,7 @@ export async function PUT(request: Request) {
     const shouldRegenerateCopyCodes =
       nextCategoryCode !== currentCategoryCode || currentBook.categorySeq == null;
     const copyUpdates = new Map(
-      copies.map((copy) => [
+      copies.map((copy: NonNullable<BookPayload["copies"]>[number]) => [
         copy.uniqueCode,
         {
           location: copy.location,
@@ -256,7 +257,7 @@ export async function PUT(request: Request) {
     });
 
     const updatedBookWithCopies = (await getAdminCatalogBooks()).find(
-      (book) => book.isbn === isbn,
+      (book: AdminCatalogBook) => book.isbn === isbn,
     );
 
     return NextResponse.json(updatedBookWithCopies ?? updatedBook);
@@ -323,7 +324,7 @@ export async function DELETE(request: Request) {
 
           const updatedBook =
             (await getAdminCatalogBooks()).find(
-              (book) => book.isbn === copy.isbn,
+              (book: AdminCatalogBook) => book.isbn === copy.isbn,
             ) ??
             null;
 
@@ -353,7 +354,7 @@ export async function DELETE(request: Request) {
               where: { isbn },
               select: { id: true },
             });
-            const copyIds = copies.map((copy) => copy.id);
+            const copyIds = copies.map((copy: { id: string }) => copy.id);
 
             if (copyIds.length > 0) {
               await tx.loan.deleteMany({
