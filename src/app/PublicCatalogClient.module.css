@@ -42,6 +42,11 @@
   background: var(--accent-blue-soft);
 }
 
+.authButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .searchStack {
   display: flex;
   flex-direction: column;
@@ -61,6 +66,7 @@
 
 .searchIcon {
   color: var(--primary);
+  flex-shrink: 0;
 }
 
 .filterPanel {
@@ -228,12 +234,72 @@
 }
 
 @media (max-width: 767px) {
+  .pageHeader {
+    align-items: stretch;
+    gap: 0.9rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .pageActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .authButton {
+    flex: 1 1 150px;
+    min-width: 0;
+    padding-inline: 0.75rem;
+  }
+
+  .searchStack {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .searchPanel {
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .searchPanel :global(.form-input) {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filterPanel {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
   .bookGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .bookCard {
     padding: 1.25rem 1rem;
+    border-radius: 8px;
+  }
+
+  .bookMain {
+    gap: 0.85rem;
+  }
+
+  .bookCover {
+    width: 82px;
+    height: 118px;
+  }
+
+  .bookTitle {
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .bookMeta {
+    overflow-wrap: anywhere;
   }
 
   .filterBar {
@@ -245,6 +311,11 @@
   .filterTags {
     width: 100%;
     justify-content: flex-start;
+    gap: 0.5rem;
+  }
+
+  .filterTag {
+    padding: 0.4rem 0.75rem;
   }
 
   .sortWrap {
@@ -252,11 +323,44 @@
     min-width: 0;
     margin-top: 0.5rem;
   }
+
+  .sortSelect {
+    width: 100%;
+  }
+
+  .badgeList {
+    gap: 0.4rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .detailLink {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-@media (max-width: 411px) {
+@media (max-width: 480px) {
+  .pageActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .authButton {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .searchPanel {
+    flex-direction: row-reverse;
+    padding: 0.9rem;
+  }
+
   .bookCover {
-    width: 50px;
-    height: 50px;
+    width: 76px;
+    height: 108px;
+  }
+
+  .bookCard {
+    padding: 1rem;
   }
 }

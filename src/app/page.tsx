@@ -1,14 +1,19 @@
 import PublicCatalogClient from "./PublicCatalogClient";
 import { getPublicCatalogBooks } from "../lib/bookCatalog";
-import { isAdminSession } from "../lib/auth";
+import { getCurrentRole } from "../lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export default async function PublicCatalogPage() {
-  const [initialBooks, isAdmin] = await Promise.all([
+  const [initialBooks, currentRole] = await Promise.all([
     getPublicCatalogBooks(),
-    isAdminSession(),
+    getCurrentRole(),
   ]);
 
-  return <PublicCatalogClient initialBooks={initialBooks} isAdmin={isAdmin} />;
+  return (
+    <PublicCatalogClient
+      initialBooks={initialBooks}
+      currentRole={currentRole}
+    />
+  );
 }

@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useI18n } from "../contexts/I18nContext";
 import Icon from "../components/Icon";
 import CustomSelect from "../components/CustomSelect";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import type { AuthRole } from "../lib/auth";
 import type { PublicCatalogBook } from "../lib/bookCatalog";
 import { usePersistentStringOption } from "../lib/usePersistentStringOption";
 import styles from "./PublicCatalogClient.module.css";
@@ -34,20 +36,24 @@ type CatalogSort = (typeof catalogSortOptions)[number];
 
 export default function PublicCatalogClient({
   initialBooks,
-  isAdmin,
+  currentRole,
 }: {
   initialBooks: PublicCatalogBook[];
-  isAdmin: boolean;
+  currentRole: AuthRole | null;
 }) {
+  const router = useRouter();
   const { t } = useI18n();
   const [books] = useState<PublicCatalogBook[]>(initialBooks);
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [sortOrder, setSortOrder] = usePersistentStringOption<CatalogSort>(
     publicCatalogSortStorageKey,
     "latest",
     catalogSortOptions,
   );
+  const isAdmin = currentRole === "admin";
+  const isLoggedIn = currentRole !== null;
 
   const filteredBooks = useMemo(() => {
     const q = searchInput.trim().toLowerCase();
@@ -85,6 +91,17 @@ export default function PublicCatalogClient({
     );
   };
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/");
+      router.refresh();
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
     <div>
       <div className={styles.pageHeader}>
@@ -98,6 +115,17 @@ export default function PublicCatalogClient({
               <Icon name="dashboard" />
               {t("openDashboard")}
             </Link>
+          ) : null}
+          {isLoggedIn ? (
+            <button
+              type="button"
+              className={styles.authButton}
+              disabled={isLoggingOut}
+              onClick={handleLogout}
+            >
+              <Icon name="logout" />
+              {t("logoutAction")}
+            </button>
           ) : (
             <Link href="/login?next=/admin" className={styles.authButton}>
               <Icon name="login" />
