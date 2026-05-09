@@ -138,8 +138,11 @@ export async function getTopBorrowedBooks({
     }),
   ]);
 
-  const copyCountByIsbn = new Map(
-    copyCounts.map((book: CopyCountBook) => [book.isbn, book._count.copies]),
+  const copyCountByIsbn = new Map<string, number>(
+    copyCounts.map((book: CopyCountBook) => [
+      book.isbn,
+      book._count.copies,
+    ]),
   );
   const activeLoanCountByIsbn = new Map<string, number>();
 
