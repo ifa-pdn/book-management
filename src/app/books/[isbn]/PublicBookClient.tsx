@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import Icon from "../../../components/Icon";
 import LanguageSwitcher from "../../../components/LanguageSwitcher";
 import { useI18n } from "../../../contexts/I18nContext";
@@ -33,7 +32,6 @@ export default function PublicBookClient({
   isAdmin: boolean;
 }) {
   const { t, lang } = useI18n();
-  const router = useRouter();
 
   const enSuffix = (n: number) => {
     if (n % 100 >= 11 && n % 100 <= 13) return `${n}th`;
@@ -65,12 +63,6 @@ export default function PublicBookClient({
     return `Ke-${num}`;
   };
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
-  };
-
   return (
     <div className={styles.bookPage}>
       <div className={styles.topBar}>
@@ -85,15 +77,12 @@ export default function PublicBookClient({
               <Icon name="dashboard" />
               {t("openDashboard")}
             </Link>
-          ) : null}
-          <button
-            type="button"
-            className={styles.authButton}
-            onClick={handleLogout}
-          >
-            <Icon name="logout" />
-            {t("logoutAction")}
-          </button>
+          ) : (
+            <Link href="/login?next=/admin" className={styles.authButton}>
+              <Icon name="login" />
+              {t("loginAdminAction")}
+            </Link>
+          )}
         </div>
       </div>
 

@@ -18,10 +18,6 @@ export function proxy(request: NextRequest) {
   const isAdminRoute =
     pathname.startsWith("/add") ||
     pathname.startsWith("/admin");
-  const isInternalRoute =
-    pathname === "/" ||
-    pathname.startsWith("/books") ||
-    pathname.startsWith("/copy");
 
   if (isAdminRoute) {
     if (!role) {
@@ -36,15 +32,6 @@ export function proxy(request: NextRequest) {
     if (role !== "admin") {
       return NextResponse.redirect(new URL("/", request.url));
     }
-  }
-
-  if (isInternalRoute && !role) {
-    const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set(
-      "next",
-      `${pathname}${request.nextUrl.search}`,
-    );
-    return NextResponse.redirect(loginUrl);
   }
 
   // Redirect authenticated users away from login page
@@ -62,5 +49,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/books/:path*', '/copy/:path*', '/add/:path*', '/admin/:path*', '/login'],
+  matcher: ['/add/:path*', '/admin/:path*', '/login'],
 };

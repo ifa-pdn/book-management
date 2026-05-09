@@ -167,21 +167,32 @@ export default function CopyClientView({
     <div className={styles.copyPage}>
       <div className={styles.copyTopBar}>
         <div className={styles.copyTopActions}>
+          <Link href="/" className={styles.topActionButton}>
+            <Icon name="menu_book" />
+            {t("bookCatalogNav")}
+          </Link>
           <LanguageSwitcher />
           {isAdmin ? (
             <Link href="/admin" className={styles.topActionButton}>
               <Icon name="dashboard" />
               {t("openDashboard")}
             </Link>
+          ) : (
+            <Link href="/login?next=/admin" className={styles.topActionButton}>
+              <Icon name="login" />
+              {t("loginAdminAction")}
+            </Link>
+          )}
+          {isAdmin ? (
+            <button
+              type="button"
+              className={styles.topActionButton}
+              onClick={handleLogout}
+            >
+              <Icon name="logout" />
+              {t("logoutAction")}
+            </button>
           ) : null}
-          <button
-            type="button"
-            className={styles.topActionButton}
-            onClick={handleLogout}
-          >
-            <Icon name="logout" />
-            {t("logoutAction")}
-          </button>
         </div>
       </div>
 

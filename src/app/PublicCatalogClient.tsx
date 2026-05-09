@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useI18n } from "../contexts/I18nContext";
 import Icon from "../components/Icon";
@@ -41,7 +40,6 @@ export default function PublicCatalogClient({
   isAdmin: boolean;
 }) {
   const { t } = useI18n();
-  const router = useRouter();
   const [books] = useState<PublicCatalogBook[]>(initialBooks);
   const [searchInput, setSearchInput] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -87,12 +85,6 @@ export default function PublicCatalogClient({
     );
   };
 
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/login");
-    router.refresh();
-  };
-
   return (
     <div>
       <div className={styles.pageHeader}>
@@ -106,15 +98,12 @@ export default function PublicCatalogClient({
               <Icon name="dashboard" />
               {t("openDashboard")}
             </Link>
-          ) : null}
-          <button
-            type="button"
-            className={styles.authButton}
-            onClick={handleLogout}
-          >
-            <Icon name="logout" />
-            {t("logoutAction")}
-          </button>
+          ) : (
+            <Link href="/login?next=/admin" className={styles.authButton}>
+              <Icon name="login" />
+              {t("loginAdminAction")}
+            </Link>
+          )}
         </div>
       </div>
 
