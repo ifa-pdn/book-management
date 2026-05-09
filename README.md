@@ -1,5 +1,7 @@
 # Lentra
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://book-management-sandy.vercel.app/)
+
 Lentra is a semi-public book catalog with internal library management tools. Visitors can browse the catalog and open book or QR pages, while admins can manage inventory, covers, copy codes, loans, returns, and borrowing reports.
 
 ## Features
@@ -86,4 +88,3 @@ Before deploying, make sure:
 - Turso tables have been created using the Prisma migration SQL files.
 - The production environment variables are set in Vercel.
 - `BLOB_READ_WRITE_TOKEN` is configured if cover uploads should be stored in Vercel Blob.
-
