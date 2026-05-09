@@ -48,7 +48,11 @@ export async function GET(request: Request) {
     });
 
     if (localBook) {
-      const highestCopyNumber = localBook.copies.reduce((max, copy) => Math.max(max, copy.copyNumber), 0);
+      const highestCopyNumber = localBook.copies.reduce(
+        (max: number, copy: { copyNumber: number }) =>
+          Math.max(max, copy.copyNumber),
+        0,
+      );
       const nextCopyNumber = highestCopyNumber + 1;
 
       return NextResponse.json({
