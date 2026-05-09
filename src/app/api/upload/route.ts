@@ -7,7 +7,9 @@ import { head, put } from '@vercel/blob';
 import { requireAdmin } from '../../../lib/auth';
 
 const isBlobNotFoundError = (error: unknown) =>
-  error instanceof Error && error.name === 'BlobNotFoundError';
+  error instanceof Error &&
+  (error.name === 'BlobNotFoundError' ||
+    error.message.includes('The requested blob does not exist'));
 
 export async function POST(request: Request) {
   try {
