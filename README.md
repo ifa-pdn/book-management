@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lentra
 
-## Getting Started
+Lentra is a semi-public book catalog with internal library management tools. Visitors can browse the catalog and open book or QR pages, while admins can manage inventory, covers, copy codes, loans, returns, and borrowing reports.
 
-First, run the development server:
+## Features
+
+- Public catalog with search, category filters, sorting, responsive book cards, and book detail pages.
+- QR-based copy pages for each physical book copy.
+- Admin dashboard for adding, editing, deleting, and exporting book data.
+- Copy code generation and QR label support.
+- Cover upload with Vercel Blob support in production and local file fallback during development.
+- Loan and return management, including active loans, history, overdue status, notes, and top-borrowed reports.
+- Role-aware authentication for admin and viewer sessions.
+- Multilingual UI support for Indonesian, English, and Japanese.
+
+## Tech Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Prisma 7
+- SQLite/libSQL with Turso for production
+- Vercel Blob for uploaded cover images
+- Vercel for deployment
+
+## Environment Variables
+
+Create a local `.env` file for development:
+
+```env
+DATABASE_URL="file:./dev.db"
+ADMIN_PASSWORD="your-admin-password"
+COMPANY_PASSCODE="your-viewer-passcode"
+```
+
+For Vercel production, configure:
+
+```env
+TURSO_DATABASE_URL="libsql://..."
+TURSO_AUTH_TOKEN="..."
+ADMIN_PASSWORD="your-admin-password"
+COMPANY_PASSCODE="your-viewer-passcode"
+BLOB_READ_WRITE_TOKEN="..."
+```
+
+`BLOB_READ_WRITE_TOKEN` is only needed when using Vercel Blob. Without it, uploads fall back to `public/uploads` for local development.
+
+## Local Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Prepare the database:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Useful Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npm run build
+```
 
-## Learn More
+`npm run build` also runs `prisma generate` before building the Next.js app.
 
-To learn more about Next.js, take a look at the following resources:
+## Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This app is designed to deploy on Vercel with Turso as the production database and Vercel Blob for cover storage.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Before deploying, make sure:
 
-## Deploy on Vercel
+- Turso tables have been created using the Prisma migration SQL files.
+- The production environment variables are set in Vercel.
+- `BLOB_READ_WRITE_TOKEN` is configured if cover uploads should be stored in Vercel Blob.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
