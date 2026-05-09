@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../../../lib/prisma";
 import { createCopyCode } from "../../../lib/copyCode";
 import { deleteStoredCoverFile } from "../../../lib/coverStorage";
@@ -194,7 +195,7 @@ export async function PUT(request: Request) {
       ]),
     );
 
-    const updatedBook = await prisma.$transaction(async (tx) => {
+    const updatedBook = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const nextCategorySeq = shouldRegenerateCopyCodes
         ? (
             (
@@ -290,7 +291,7 @@ export async function DELETE(request: Request) {
             );
           }
 
-          const deletedBook = await prisma.$transaction(async (tx) => {
+          const deletedBook = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             await tx.loan.deleteMany({ where: { bookCopyId: copy.id } });
             await tx.bookCopy.delete({ where: { uniqueCode: copyId } });
 
@@ -342,7 +343,7 @@ export async function DELETE(request: Request) {
             );
           }
 
-          await prisma.$transaction(async (tx) => {
+          await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             const copies = await tx.bookCopy.findMany({
               where: { isbn },
               select: { id: true },
