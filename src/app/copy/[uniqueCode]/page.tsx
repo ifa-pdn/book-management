@@ -10,6 +10,10 @@ import CopyClientView from "./CopyClientView";
 
 const text = (value?: string | null) => value ?? "";
 
+type CopyIdentity = {
+  id: string;
+};
+
 export default async function CopyPage({
   params,
 }: {
@@ -59,7 +63,9 @@ export default async function CopyPage({
 
   const isAdmin = await isAdminSession();
   const availability = getAvailabilitySummary(copy.book.copies);
-  const currentCopy = copy.book.copies.find((item) => item.id === copy.id);
+  const currentCopy = copy.book.copies.find(
+    (item: CopyIdentity) => item.id === copy.id,
+  );
   const derivedStatus = currentCopy
     ? getCopyDerivedStatus(currentCopy)
     : "available";

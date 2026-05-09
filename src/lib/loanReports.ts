@@ -22,6 +22,17 @@ type RankingInput = {
   limit?: number;
 };
 
+type CopyCountBook = {
+  isbn: string;
+  _count: {
+    copies: number;
+  };
+};
+
+type RankingBook = Omit<TopBorrowedBook, "rank" | "totalCopies" | "activeLoans"> & {
+  lastBorrowedAtDate: Date;
+};
+
 const isReportPeriod = (value: string | null | undefined): value is ReportPeriod =>
   Boolean(value && reportPeriods.includes(value as ReportPeriod));
 
@@ -70,12 +81,7 @@ export async function getTopBorrowedBooks({
     },
   });
 
-  const rankingMap = new Map<
-    string,
-    Omit<TopBorrowedBook, "rank" | "totalCopies" | "activeLoans"> & {
-      lastBorrowedAtDate: Date;
-    }
-  >();
+  const rankingMap = new Map<string, RankingBook>();
 
   for (const loan of loans) {
     const book = loan.bookCopy.book;
@@ -133,7 +139,7 @@ export async function getTopBorrowedBooks({
   ]);
 
   const copyCountByIsbn = new Map(
-    copyCounts.map((book) => [book.isbn, book._count.copies]),
+    copyCounts.map((book: CopyCountBook) => [book.isbn, book._count.copies]),
   );
   const activeLoanCountByIsbn = new Map<string, number>();
 
@@ -143,7 +149,7 @@ export async function getTopBorrowedBooks({
   }
 
   return [...rankingMap.values()]
-    .sort((a, b) => {
+    .sort((a: RankingBook, b: RankingBook) => {
       if (b.totalLoans !== a.totalLoans) return b.totalLoans - a.totalLoans;
       const dateDiff =
         b.lastBorrowedAtDate.getTime() - a.lastBorrowedAtDate.getTime();
@@ -151,7 +157,7 @@ export async function getTopBorrowedBooks({
       return a.title.localeCompare(b.title);
     })
     .slice(0, safeLimit)
-    .map((book, index) => ({
+    .map((book: RankingBook, index: number) => ({
       rank: index + 1,
       isbn: book.isbn,
       title: book.title,

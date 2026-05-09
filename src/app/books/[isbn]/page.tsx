@@ -6,6 +6,10 @@ import PublicBookClient from "./PublicBookClient";
 
 const text = (value?: string | null) => value ?? "";
 
+type BookCopyCode = {
+  uniqueCode: string;
+};
+
 export default async function PublicBookPage({
   params,
 }: {
@@ -48,7 +52,7 @@ export default async function PublicBookPage({
     publishDate: text(book.publishDate),
     size: text(book.size),
     category: text(book.category),
-    copyCodes: book.copies.map((copy) => copy.uniqueCode),
+    copyCodes: book.copies.map((copy: BookCopyCode) => copy.uniqueCode),
     ...availability,
   };
 

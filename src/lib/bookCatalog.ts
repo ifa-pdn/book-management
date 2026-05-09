@@ -13,6 +13,34 @@ export type AdminCatalogBookCopy = {
   derivedStatus: DerivedLoanStatus;
 };
 
+type BookCopyWithLoans = {
+  id: string;
+  uniqueCode: string;
+  location: string | null;
+  condition: string | null;
+  loans?: Array<{
+    dueAt: Date | string;
+    returnedAt: Date | string | null;
+    status?: string | null;
+  }>;
+};
+
+type BookWithCopies = {
+  isbn: string;
+  title: string;
+  author: string | null;
+  publisher: string | null;
+  coverUrl: string | null;
+  edition: string | null;
+  printing: string | null;
+  publishDate: string | null;
+  size: string | null;
+  category: string | null;
+  categoryCode: string | null;
+  categorySeq: number | null;
+  copies: BookCopyWithLoans[];
+};
+
 export type AdminCatalogBook = {
   isbn: string;
   title: string;
@@ -76,7 +104,7 @@ export async function getAdminCatalogBooks() {
     },
   });
 
-  return books.map((book) => {
+  return books.map((book: BookWithCopies) => {
     const availability = getAvailabilitySummary(book.copies);
 
     return {
@@ -93,7 +121,7 @@ export async function getAdminCatalogBooks() {
       categoryCode: text(book.categoryCode),
       categorySeq: numberValue(book.categorySeq),
       ...availability,
-      copies: book.copies.map((copy) => ({
+      copies: book.copies.map((copy: BookCopyWithLoans) => ({
         id: copy.id,
         uniqueCode: copy.uniqueCode,
         location: text(copy.location),
@@ -125,7 +153,7 @@ export async function getPublicCatalogBooks() {
     },
   });
 
-  return books.map((book) => {
+  return books.map((book: BookWithCopies) => {
     const availability = getAvailabilitySummary(book.copies);
 
     return {
