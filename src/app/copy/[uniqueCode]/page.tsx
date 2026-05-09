@@ -14,6 +14,22 @@ type CopyIdentity = {
   id: string;
 };
 
+type CopyActiveLoan = {
+  id: string;
+  borrowerName: string;
+  borrowerClass: string;
+  borrowedAt: Date;
+  dueAt: Date;
+  returnedAt: Date | null;
+  status: string;
+};
+
+type CopyWithActiveLoans = typeof prisma.bookCopy extends {
+  findUnique: (...args: unknown[]) => Promise<infer T>;
+}
+  ? NonNullable<T> & { loans: CopyActiveLoan[] }
+  : { loans: CopyActiveLoan[] };
+
 export default async function CopyPage({
   params,
 }: {
@@ -69,7 +85,9 @@ export default async function CopyPage({
   const derivedStatus = currentCopy
     ? getCopyDerivedStatus(currentCopy)
     : "available";
-  const activeLoan = getActiveLoan(copy);
+  const activeLoan = getActiveLoan<CopyActiveLoan>(
+    copy as CopyWithActiveLoans,
+  );
   const publicCopy = {
     uniqueCode: copy.uniqueCode,
     derivedStatus,
