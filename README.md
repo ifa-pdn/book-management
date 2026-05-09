@@ -1,6 +1,6 @@
 # Lentra
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://book-management-sandy.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20App-002d42?style=for-the-badge)](https://book-management-sandy.vercel.app/)
 
 Lentra is a semi-public book catalog with internal library management tools. Visitors can browse the catalog and open book or QR pages, while admins can manage inventory, covers, copy codes, loans, returns, and borrowing reports.
 
