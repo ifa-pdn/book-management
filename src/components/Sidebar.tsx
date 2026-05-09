@@ -19,6 +19,15 @@ export default function Sidebar() {
   const isAddRoute = pathname === "/add" || pathname === "/admin/add";
   const isLoansRoute = pathname.startsWith("/admin/loans");
 
+  const handleLogout = async () => {
+    if (await dialog.confirm(t("logoutConfirmMessage"))) {
+      setIsMobileMenuOpen(false);
+      await fetch("/api/auth/logout", { method: "POST" });
+      router.push("/");
+      router.refresh();
+    }
+  };
+
   if (pathname === "/login") return null;
 
   return (
@@ -65,13 +74,7 @@ export default function Sidebar() {
         />
         <button
           className={`btn ${styles.logout}`}
-          onClick={async () => {
-            if (await dialog.confirm(t("logoutConfirmMessage"))) {
-              await fetch("/api/auth/logout", { method: "POST" });
-              router.push("/login");
-              router.refresh();
-            }
-          }}
+          onClick={handleLogout}
         >
           Logout
         </button>
@@ -135,14 +138,7 @@ export default function Sidebar() {
           />
           <button
             className={`btn ${styles.logout} ${styles.mobileLogout}`}
-            onClick={async () => {
-              if (await dialog.confirm(t("logoutConfirmMessage"))) {
-                setIsMobileMenuOpen(false);
-                await fetch("/api/auth/logout", { method: "POST" });
-                router.push("/login");
-                router.refresh();
-              }
-            }}
+            onClick={handleLogout}
           >
             Logout
           </button>
